@@ -1,70 +1,80 @@
 # 🌟 BarangAI
 
-**An AI-Powered Digital Twin and Decision Intelligence Platform for Smarter Communities.**
+**An AI-Powered Digital Twin and Decision Intelligence Platform for Smart Communities.**
 
 ---
 
 ## 🚀 About the Project
 
-BarangAI is developed for **SparkFest 2026**, a hackathon organized by **Google Developer Groups on Campus – Polytechnic University of the Philippines (GDG PUP)**.
+This project is developed as part of **SparkFest 2026**, a hackathon organized by **Google Developer Groups on Campus – Polytechnic University of the Philippines (GDG PUP).**
 
-BarangAI helps local governments make smarter, data-driven decisions by creating a digital twin of a barangay or city. Using AI, geospatial data, and predictive analytics, officials can simulate projects, evaluate policies, identify vulnerable communities, and optimize public investments before implementation.
+BarangAI aims to help local governments make smarter, evidence-based decisions by combining artificial intelligence, geospatial visualization, and community data. Through interactive simulations and decision intelligence, the platform enables officials to evaluate projects, optimize resource allocation, and strengthen community resilience before implementation.
 
 ---
 
 ## 🎯 Problem Statement
 
-Local governments make critical decisions on infrastructure, disaster preparedness, environmental planning, and public services using limited data, historical reports, and manual assessments. Without the ability to simulate future outcomes, projects may lead to unintended consequences, inefficient spending, and reduced community resilience.
+Local governments make hundreds of decisions every year involving infrastructure development, disaster preparedness, environmental planning, and public service allocation. However, these decisions are often based on historical reports, manual assessments, community consultations, and limited datasets, making it difficult to predict their long-term impact.
 
-BarangAI addresses this challenge by enabling evidence-based planning through AI-powered simulations and predictive insights.
+Without the ability to simulate future scenarios, governments risk inefficient spending, unintended consequences, delayed interventions, and reduced community resilience.
 
 ---
 
 ## 💡 Proposed Solution
 
-BarangAI is an AI-powered Digital Twin and Decision Intelligence Platform that creates a virtual representation of a community using geospatial, demographic, environmental, and infrastructure data.
+BarangAI is an AI-powered Digital Twin and Decision Intelligence Platform that creates a virtual model of a barangay or city using geospatial, demographic, environmental, and infrastructure data.
 
-Through natural language interactions powered by Gemini AI, decision-makers can simulate infrastructure projects, compare policy scenarios, identify vulnerable communities, and receive explainable AI recommendations before investing public resources.
-
-Instead of reacting to problems after they occur, BarangAI empowers local governments to make proactive, transparent, and data-driven decisions.
+Using Google Gemini and Google Maps Platform, decision-makers can simulate infrastructure projects and policy changes, identify vulnerable communities, optimize budgets, and evaluate potential outcomes before implementation. By combining AI-powered insights with interactive mapping, BarangAI helps local governments make proactive, transparent, and data-driven decisions.
 
 ---
 
-## ⚙️ Core Features
+## ⚙️ Features
 
-- 🤖 **AI Scenario Simulator** – Simulate infrastructure projects and predict their social, environmental, and economic impacts.
-- 🛡️ **Community Vulnerability Intelligence** – Identify at-risk households and prioritize disaster response and public services.
-- 💰 **AI Budget Optimization Engine** – Recommend the highest-impact projects based on available budgets and community needs.
-- 📊 **Decision Intelligence Dashboard** – Visualize community data, infrastructure status, resilience metrics, and AI recommendations on an interactive map.
+* 🤖 AI Scenario Simulator
+* 🛡️ Community Vulnerability Intelligence
+* 💰 AI Budget Optimization Engine
+* 📈 Community Resilience Score
+* 🗺️ Community Analytics Dashboard
 
 ---
 
 ## 🧪 Tech Stack
 
 **Frontend**
-- Flutter
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* shadcn/ui
+* Lucide React
 
 **Backend**
-- Firebase
-- Vertex AI
-- Gemini API
+
+* Node.js
+* Express.js
 
 **Database**
-- Cloud Firestore
-- BigQuery
 
-**Google Technologies**
-- Gemini AI
-- Google Maps Platform
-- Firebase
-- Vertex AI
-- BigQuery
-- Google Earth Engine *(Optional)*
+* PostgreSQL
+* Prisma ORM
+
+**AI & Google Technologies**
+
+* Gemini API
+* Google Maps Platform
+* Firebase *(Optional)*
+
+**Deployment**
+
+* Vercel
+* Railway
 
 **Tools**
-- GitHub
-- Figma
-- VS Code
+
+* GitHub
+* VS Code
+* Figma
 
 ---
 
@@ -75,9 +85,3 @@ Instead of reacting to problems after they occur, BarangAI empowers local govern
 **Alternative Link:** Coming Soon
 
 **GitHub Repository:** https://github.com/robraymundo/barangai
-
----
-
-## 👥 Team
-
-Developed for **SparkFest 2026** by Team BarangAI.
