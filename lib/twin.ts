@@ -6,9 +6,15 @@
 
 import type { BarangayProfile } from "@/types";
 import indicators from "@/data/indicators.json";
+import geojson from "@/data/barangay.json";
 
 export const barangayProfile = indicators as BarangayProfile;
 
 export function getProfile(): BarangayProfile {
   return barangayProfile;
+}
+
+/** Zone boundary GeoJSON (FeatureCollection) for the map. */
+export function getGeojson() {
+  return geojson;
 }

@@ -49,7 +49,7 @@ export const ENV = {
   /**
    * Nominal zone area (m²) used to convert tree counts into added green-cover fraction
    * (trees × canopy ÷ area). Matches the ~0.5 km² placeholder grid cells in
-   * data/barangay.geojson; override per zone once real boundary polygons are loaded.
+   * data/barangay.json; override per zone once real boundary polygons are loaded.
    */
   nominalZoneAreaM2: 500_000,
 } as const;

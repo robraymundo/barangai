@@ -28,10 +28,11 @@ one AI explanation layer → five views.** Everything below serves that.
 The barangay is divided into **zones** (puroks/sitios). Each zone carries the raw
 indicators. Scores are *derived*, never stored in the source data.
 
-### 1.1 `data/barangay.geojson`
+### 1.1 `data/barangay.json`
 
-Standard GeoJSON `FeatureCollection`. One `Feature` per zone. Geometry is the zone
-polygon; `properties.zoneId` links to indicators.
+Standard GeoJSON `FeatureCollection` (stored with a `.json` extension so it imports as a
+module). One `Feature` per zone. Geometry is the zone polygon; `properties.zoneId` links to
+indicators.
 
 ```jsonc
 {
@@ -337,7 +338,7 @@ the resilience timeline that powers Feature 4's "track over time" chart.
 │  ├─ scoring/{vulnerability,resilience,budget,scenario}.ts   # §2, pure
 │  ├─ ai/{parse,explain,canned}.ts                            # §3
 │  └─ firebase/{client,admin}.ts
-├─ data/{barangay.geojson,indicators.json}                    # §1, the twin
+├─ data/{barangay.json,indicators.json}                       # §1, the twin (GeoJSON + indicators)
 ├─ types/index.ts                   # all interfaces above
 └─ docs/                            # PRD, architecture, this file
 ```

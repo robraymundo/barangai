@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "_note": "PLACEHOLDER geometry — simple grid cells near Alibagu's centroid for MVP rendering. Replace with the real OSM/PSA barangay + purok boundary polygons before final demo. properties.zoneId links to data/indicators.json.",
+  "_note": "PLACEHOLDER geometry — simple grid cells near Alibagu's centroid for MVP rendering. GeoJSON stored with a .json extension so it is importable as a module. Replace with the real OSM/PSA barangay + purok boundary polygons before final demo. properties.zoneId links to data/indicators.json.",
   "features": [
     {
       "type": "Feature",

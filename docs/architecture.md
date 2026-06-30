@@ -24,5 +24,5 @@ Layering:
 
 lib/scoring/ — pure, deterministic, testable functions (vulnerability, resilience, budget knapsack). The defensible core.
 lib/ai/ — Gemini wrappers using structured output (JSON schema / function calling) so responses are parseable, plus the canned-response fallback map.
-data/barangay.geojson + data/indicators.json — the static digital twin, version-controlled.
+data/barangay.json (GeoJSON) + data/indicators.json — the static digital twin, version-controlled.
 Firestore — only scenario history + resilience timeline.
