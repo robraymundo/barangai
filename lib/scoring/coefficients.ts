@@ -2,9 +2,11 @@
  * Scenario effect coefficients — the lookup tables that make simulateScenario() pure
  * and reproducible.
  *
- * ⚠️ STATUS: DRAFT — evidence-informed proposals awaiting sign-off (see docs/coefficients.md
- * for the assumptions and sources behind every number). They are intentionally grouped in
- * one exported object so they are easy to review, tune, and (later) override per barangay.
+ * STATUS: Finalized for the hackathon MVP demonstration. See docs/coefficients.md for the
+ * disclaimer, limitations, per-coefficient confidence levels (High/Medium/Low), and sources
+ * behind every number. Values are for decision-SUPPORT and scenario comparison only — they
+ * are simplified, not engineering-grade predictions. Grouped in one exported object so they
+ * stay easy to review, tune, and override per barangay.
  *
  * Direction conventions:
  *   - resilience score: 0..100, higher = better.
