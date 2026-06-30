@@ -1,0 +1,152 @@
+{
+  "id": "brgy-alibagu",
+  "name": "Alibagu",
+  "city": "Ilagan City, Isabela",
+  "centroid": { "lat": 17.1465, "lng": 121.8805 },
+  "dataSources": [
+    "PSA 2020 Census (barangay population, age structure) — approximated",
+    "NDRRMC / Project NOAH hazard exposure — modeled",
+    "OpenStreetMap (roads, facilities) — derived",
+    "SYNTHETIC: income, housing quality, PWD counts, green cover, and per-purok splits are illustrative for the hackathon MVP and are not official figures"
+  ],
+  "zones": [
+    {
+      "zoneId": "Z01",
+      "name": "Purok 1 - Riverside",
+      "population": 3200,
+      "elderly": 410,
+      "children": 980,
+      "pwd": 95,
+      "households": 720,
+      "avgMonthlyIncome": 9800,
+      "housingQuality": 0.42,
+      "roadAccess": 0.55,
+      "distanceToHospitalKm": 4.2,
+      "distanceToEvacCenterKm": 3.1,
+      "floodExposure": 0.82,
+      "landslideExposure": 0.08,
+      "greenCoverFraction": 0.12,
+      "treeCount": 640
+    },
+    {
+      "zoneId": "Z02",
+      "name": "Purok 2 - Centro",
+      "population": 4100,
+      "elderly": 470,
+      "children": 1010,
+      "pwd": 88,
+      "households": 980,
+      "avgMonthlyIncome": 18500,
+      "housingQuality": 0.78,
+      "roadAccess": 0.93,
+      "distanceToHospitalKm": 0.9,
+      "distanceToEvacCenterKm": 0.7,
+      "floodExposure": 0.31,
+      "landslideExposure": 0.05,
+      "greenCoverFraction": 0.18,
+      "treeCount": 1120
+    },
+    {
+      "zoneId": "Z03",
+      "name": "Purok 3 - Highway",
+      "population": 3650,
+      "elderly": 380,
+      "children": 1130,
+      "pwd": 102,
+      "households": 845,
+      "avgMonthlyIncome": 14200,
+      "housingQuality": 0.66,
+      "roadAccess": 0.88,
+      "distanceToHospitalKm": 1.8,
+      "distanceToEvacCenterKm": 1.4,
+      "floodExposure": 0.45,
+      "landslideExposure": 0.06,
+      "greenCoverFraction": 0.1,
+      "treeCount": 520
+    },
+    {
+      "zoneId": "Z04",
+      "name": "Purok 4 - Upland",
+      "population": 2400,
+      "elderly": 300,
+      "children": 760,
+      "pwd": 71,
+      "households": 560,
+      "avgMonthlyIncome": 11200,
+      "housingQuality": 0.5,
+      "roadAccess": 0.4,
+      "distanceToHospitalKm": 6.5,
+      "distanceToEvacCenterKm": 4.8,
+      "floodExposure": 0.15,
+      "landslideExposure": 0.38,
+      "greenCoverFraction": 0.34,
+      "treeCount": 1980
+    },
+    {
+      "zoneId": "Z05",
+      "name": "Purok 5 - Farmlands",
+      "population": 1950,
+      "elderly": 260,
+      "children": 540,
+      "pwd": 60,
+      "households": 470,
+      "avgMonthlyIncome": 8700,
+      "housingQuality": 0.38,
+      "roadAccess": 0.35,
+      "distanceToHospitalKm": 7.8,
+      "distanceToEvacCenterKm": 5.5,
+      "floodExposure": 0.58,
+      "landslideExposure": 0.12,
+      "greenCoverFraction": 0.46,
+      "treeCount": 2870
+    },
+    {
+      "zoneId": "Z06",
+      "name": "Purok 6 - Eastside",
+      "population": 2800,
+      "elderly": 340,
+      "children": 820,
+      "pwd": 79,
+      "households": 650,
+      "avgMonthlyIncome": 16100,
+      "housingQuality": 0.72,
+      "roadAccess": 0.81,
+      "distanceToHospitalKm": 2.4,
+      "distanceToEvacCenterKm": 2.0,
+      "floodExposure": 0.38,
+      "landslideExposure": 0.07,
+      "greenCoverFraction": 0.2,
+      "treeCount": 990
+    }
+  ],
+  "facilities": [
+    {
+      "id": "F01",
+      "type": "hospital",
+      "name": "Ilagan City District Health Center (nearest)",
+      "location": { "lat": 17.1492, "lng": 121.8896 },
+      "zoneId": "Z02"
+    },
+    {
+      "id": "F02",
+      "type": "evacuation_center",
+      "name": "Alibagu Centro Covered Court",
+      "location": { "lat": 17.147, "lng": 121.881 },
+      "zoneId": "Z02"
+    },
+    {
+      "id": "F03",
+      "type": "school",
+      "name": "Alibagu Elementary School",
+      "location": { "lat": 17.1455, "lng": 121.8822 },
+      "zoneId": "Z03"
+    },
+    {
+      "id": "F04",
+      "type": "fire_station",
+      "name": "Ilagan Central Fire Station (nearest)",
+      "location": { "lat": 17.1503, "lng": 121.8901 },
+      "zoneId": "Z02"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "type": "FeatureCollection",
+  "_note": "PLACEHOLDER geometry — simple grid cells near Alibagu's centroid for MVP rendering. Replace with the real OSM/PSA barangay + purok boundary polygons before final demo. properties.zoneId links to data/indicators.json.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "zoneId": "Z01", "name": "Purok 1 - Riverside" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[121.872,17.150],[121.878,17.150],[121.878,17.156],[121.872,17.156],[121.872,17.150]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zoneId": "Z02", "name": "Purok 2 - Centro" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[121.878,17.150],[121.884,17.150],[121.884,17.156],[121.878,17.156],[121.878,17.150]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zoneId": "Z03", "name": "Purok 3 - Highway" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[121.884,17.150],[121.890,17.150],[121.890,17.156],[121.884,17.156],[121.884,17.150]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zoneId": "Z04", "name": "Purok 4 - Upland" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[121.872,17.144],[121.878,17.144],[121.878,17.150],[121.872,17.150],[121.872,17.144]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zoneId": "Z05", "name": "Purok 5 - Farmlands" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[121.878,17.144],[121.884,17.144],[121.884,17.150],[121.878,17.150],[121.878,17.144]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zoneId": "Z06", "name": "Purok 6 - Eastside" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[121.884,17.144],[121.890,17.144],[121.890,17.150],[121.884,17.150],[121.884,17.144]]]
+      }
+    }
+  ]
+}
