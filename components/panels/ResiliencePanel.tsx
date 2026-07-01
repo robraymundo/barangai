@@ -42,19 +42,28 @@ export default function ResiliencePanel({
     value: components[k],
   }));
 
+  const tooltipStyle = {
+    background: "#171922",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: 8,
+    color: "#e5e7eb",
+    fontSize: 12,
+  };
+  const tickStyle = { fontSize: 10, fill: "#9ca3af" };
+
   return (
-    <Card title="Community Resilience Score" subtitle="Updates after every simulation" icon="📊">
+    <Card bare title="Community Resilience Score" subtitle="Updates after every simulation" icon="📊">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
           <ScoreDial score={score} polarity="goodHigh" label="Current resilience" />
           <div className="h-40 flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-20} textAnchor="end" height={44} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-                <Tooltip formatter={(v: number) => [`${Math.round(v)}`, "Score"]} />
-                <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.08)" />
+                <XAxis dataKey="name" tick={tickStyle} interval={0} angle={-20} textAnchor="end" height={44} />
+                <YAxis domain={[0, 100]} tick={tickStyle} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${Math.round(v)}`, "Score"]} />
+                <Bar dataKey="value" fill="#22d3ee" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -67,11 +76,11 @@ export default function ResiliencePanel({
           <div className="h-36">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={timeline} margin={{ top: 8, right: 12, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                <XAxis dataKey="label" tick={{ fontSize: 10 }} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-                <Tooltip formatter={(v: number) => [`${Math.round(v)}`, "Resilience"]} />
-                <Line type="monotone" dataKey="score" stroke="#16a34a" strokeWidth={2} dot={{ r: 3 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+                <XAxis dataKey="label" tick={tickStyle} />
+                <YAxis domain={[0, 100]} tick={tickStyle} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${Math.round(v)}`, "Resilience"]} />
+                <Line type="monotone" dataKey="score" stroke="#34d399" strokeWidth={2} dot={{ r: 3, fill: "#34d399" }} />
               </LineChart>
             </ResponsiveContainer>
           </div>

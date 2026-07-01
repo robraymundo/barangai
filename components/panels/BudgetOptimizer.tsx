@@ -38,7 +38,7 @@ export default function BudgetOptimizer() {
   }
 
   return (
-    <Card title="AI Budget Optimization" subtitle="Rank projects for the greatest community value" icon="💰">
+    <Card bare title="AI Budget Optimization" subtitle="Rank projects for the greatest community value" icon="💰">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <label className="flex-1 text-sm">
@@ -51,13 +51,13 @@ export default function BudgetOptimizer() {
               step={500_000}
               value={budget}
               onChange={(e) => setBudget(Number(e.target.value))}
-              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm tabular-nums outline-none focus:border-neutral-500 focus:ring-2 focus:ring-neutral-200"
+              className="w-full rounded-lg border border-white/10 bg-neutral-800/60 px-3 py-2 text-sm tabular-nums text-neutral-100 outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/20"
             />
           </label>
           <button
             onClick={run}
             disabled={loading || budget <= 0}
-            className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-700 disabled:opacity-40"
+            className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition hover:bg-emerald-400 disabled:opacity-40"
           >
             {loading ? "Optimizing…" : "Optimize"}
           </button>
@@ -68,38 +68,38 @@ export default function BudgetOptimizer() {
         </p>
 
         {loading && <Spinner />}
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-red-400">{error}</p>}
 
         {data && !loading && (
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Badge tone="green">{data.result.selected.length} funded</Badge>
-              <span className="text-neutral-500">
+              <span className="text-neutral-400">
                 {peso(data.result.totalCost)} of {peso(data.result.budget)} · total benefit{" "}
                 {Math.round(data.result.totalBenefit)}
               </span>
             </div>
-            <p className="text-sm leading-relaxed text-neutral-700">{data.summary}</p>
+            <p className="text-sm leading-relaxed text-neutral-300">{data.summary}</p>
 
             <ul className="flex flex-col gap-2">
               {data.result.selected.map((s) => (
-                <li key={s.project.id} className="rounded-lg border border-green-200 bg-green-50/60 px-3 py-2">
+                <li key={s.project.id} className="rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-3 py-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-neutral-800">✓ {s.project.name}</span>
-                    <span className="text-xs text-neutral-500 tabular-nums">
+                    <span className="text-sm font-medium text-neutral-100">✓ {s.project.name}</span>
+                    <span className="text-xs text-neutral-400 tabular-nums">
                       {peso(s.project.cost)} · benefit {Math.round(s.benefit)}
                     </span>
                   </div>
                   {data.perProject[s.project.id] && (
-                    <p className="mt-0.5 text-xs text-neutral-600">{data.perProject[s.project.id]}</p>
+                    <p className="mt-0.5 text-xs text-neutral-400">{data.perProject[s.project.id]}</p>
                   )}
                 </li>
               ))}
               {data.result.rejected.map((r) => (
-                <li key={r.project.id} className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 opacity-70">
+                <li key={r.project.id} className="rounded-lg border border-white/5 bg-white/5 px-3 py-2 opacity-70">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-neutral-600">✕ {r.project.name}</span>
-                    <span className="text-xs text-neutral-400 tabular-nums">
+                    <span className="text-sm font-medium text-neutral-400">✕ {r.project.name}</span>
+                    <span className="text-xs text-neutral-500 tabular-nums">
                       {peso(r.project.cost)} · benefit {Math.round(r.benefit)}
                     </span>
                   </div>
