@@ -6,6 +6,7 @@ import { APIProvider, Map, useMap } from "@vis.gl/react-google-maps";
 import type { BarangayProfile } from "@/types";
 import type { ZoneFeatureCollection } from "@/lib/client/api";
 import { scoreColor } from "@/components/ui";
+import { polygonCentroid, vulnerabilityTier } from "@/lib/geo";
 
 // Leaflet fallback — loaded only when there's no Google key, client-side only.
 const OSMMap = dynamic(() => import("./OSMMap"), { ssr: false });
@@ -71,9 +72,27 @@ function ZonesLayer({ profile, geojson, vulnerabilityByZone }: MapProps) {
         }),
     );
 
+    // Inline "High"/"Moderate"/"Low" tier label centered in each zone, matching the OSM
+    // fallback. Google's basic marker label has no background-pill styling, so this is a
+    // plainer treatment than the Leaflet path — acceptable since it's the secondary map.
+    const labelMarkers = geojson.features.map((feature) => {
+      const zoneId = feature.properties.zoneId;
+      const score = vulnerabilityByZone[zoneId] ?? 0;
+      const tier = vulnerabilityTier(score);
+      const { lat, lng } = polygonCentroid(feature.geometry.coordinates[0]);
+      return new google.maps.Marker({
+        position: { lat, lng },
+        map,
+        label: { text: tier, color: "#f5f5f5", fontSize: "11px", fontWeight: "600" },
+        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 0, fillOpacity: 0, strokeOpacity: 0 },
+        clickable: false,
+      });
+    });
+
     return () => {
       data.setMap(null);
       markers.forEach((m) => m.setMap(null));
+      labelMarkers.forEach((m) => m.setMap(null));
       google.maps.event.removeListener(clickListener);
       info.close();
     };

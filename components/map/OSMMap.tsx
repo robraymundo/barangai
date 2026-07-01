@@ -6,6 +6,7 @@ import type { Map as LeafletMap } from "leaflet";
 import type { BarangayProfile } from "@/types";
 import type { ZoneFeatureCollection } from "@/lib/client/api";
 import { scoreColor } from "@/components/ui";
+import { polygonCentroid, vulnerabilityTier } from "@/lib/geo";
 
 interface Props {
   profile: BarangayProfile;
@@ -61,6 +62,26 @@ export default function OSMMap({ profile, geojson, vulnerabilityByZone }: Props)
         map.fitBounds(layer.getBounds(), { padding: [20, 20] });
       } catch {
         /* empty/degenerate geometry — keep default view */
+      }
+
+      // Inline "High"/"Moderate"/"Low" tier label centered in each zone polygon, so the
+      // color coding is legible without relying solely on the corner legend. Non-interactive
+      // so it never blocks the zone's own click-to-popup behavior.
+      for (const feature of geojson.features) {
+        const zoneId = feature.properties.zoneId;
+        const score = vulnerabilityByZone[zoneId] ?? 0;
+        const tier = vulnerabilityTier(score);
+        const { lat, lng } = polygonCentroid(feature.geometry.coordinates[0]);
+        L.marker([lat, lng], {
+          icon: L.divIcon({
+            html: `<div style="transform:translate(-50%,-50%)" class="whitespace-nowrap rounded-full bg-neutral-950/80 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-neutral-50 shadow-md ring-1 ring-white/15">${tier}</div>`,
+            className: "",
+            iconSize: [0, 0],
+            iconAnchor: [0, 0],
+          }),
+          interactive: false,
+          keyboard: false,
+        }).addTo(map);
       }
 
       for (const f of profile.facilities) {
