@@ -1,18 +1,19 @@
 /** Small, dependency-free presentational primitives shared across the dashboard. */
 
 import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 
 export function Card({
   title,
   subtitle,
-  icon,
+  icon: Icon,
   children,
   className = "",
   bare = false,
 }: {
   title?: string;
   subtitle?: string;
-  icon?: string;
+  icon?: LucideIcon;
   children: ReactNode;
   className?: string;
   /** Render without the glass surface/border — used inside a container that already
@@ -23,7 +24,7 @@ export function Card({
     <header className={bare ? "mb-4" : "border-b border-white/10 px-5 py-4"}>
       {title && (
         <h2 className="flex items-center gap-2 text-base font-semibold text-neutral-50">
-          {icon && <span aria-hidden>{icon}</span>}
+          {Icon && <Icon size={18} strokeWidth={2} className="text-emerald-400" aria-hidden />}
           {title}
         </h2>
       )}

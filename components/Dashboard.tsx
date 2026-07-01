@@ -209,7 +209,7 @@ export default function Dashboard() {
           <BudgetOptimizer />
         </div>
         <div className={activeTab === "info" ? "" : "hidden"}>
-          <Card bare title="About this demo" icon="ℹ️">
+          <Card bare title="About this demo" icon={Info}>
             <div className="flex flex-col gap-3 text-sm text-neutral-300">
               <p className="leading-relaxed">
                 BarangAI outputs are decision-support estimates from simplified models, intended

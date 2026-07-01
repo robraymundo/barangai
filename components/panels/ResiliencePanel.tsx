@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { ShieldCheck } from "lucide-react";
 import type { ResilienceComponents } from "@/types";
 import { Card, ScoreDial } from "@/components/ui";
 
@@ -52,7 +53,7 @@ export default function ResiliencePanel({
   const tickStyle = { fontSize: 10, fill: "#9ca3af" };
 
   return (
-    <Card bare title="Community Resilience Score" subtitle="Updates after every simulation" icon="📊">
+    <Card bare title="Community Resilience Score" subtitle="Updates after every simulation" icon={ShieldCheck}>
       <div className="flex flex-col gap-5">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
           <ScoreDial score={score} polarity="goodHigh" label="Current resilience" />

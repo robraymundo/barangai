@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Wallet } from "lucide-react";
 import type { ProjectCandidate } from "@/types";
 import { api, type BudgetResponse } from "@/lib/client/api";
 import { Card, Badge, Spinner } from "@/components/ui";
@@ -38,7 +39,7 @@ export default function BudgetOptimizer() {
   }
 
   return (
-    <Card bare title="AI Budget Optimization" subtitle="Rank projects for the greatest community value" icon="💰">
+    <Card bare title="AI Budget Optimization" subtitle="Rank projects for the greatest community value" icon={Wallet}>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <label className="flex-1 text-sm">
