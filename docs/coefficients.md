@@ -54,7 +54,7 @@ decision-support, not official predictions.)
 | Mature tree canopy area | **30 m²** | Medium | Typical urban crown 25–50 m² (urban-forestry literature, i-Tree canopy datasets). Converts tree counts → added green-cover fraction. |
 | Urban heat reduction | **3.0 °C per +1.0 green-cover unit** | Low | Direction supported by **US EPA — Using Trees and Vegetation to Reduce Heat Islands**, which reports neighborhood air-temp reductions of ~1–5 °C for substantial canopy gains. The *linear* per-unit conversion is a demonstration simplification. |
 | Flood exposure reduction | **0.25 (0..1) per +1.0 green-cover unit** | Low | Direction supported by **US EPA — Green Infrastructure / Soak Up the Rain** (vegetated, permeable surfaces reduce stormwater runoff). Magnitude is a conservative demonstration assumption, not a hydrological result. |
-| Nominal zone area | **500,000 m² (~0.5 km²)** | Low | Placeholder matching the demo grid cells in `data/barangay.json`. Replace per-zone once real **PSA/OSM** boundary polygons are loaded. |
+| Nominal zone area | **500,000 m² (~0.5 km²)** | Low | Approximates the order of magnitude of each zone wedge in `data/barangay.json` (a hand-traced outline anchored on Alibagu's confirmed OSM point, not a surveyed per-purok area). Replace per-zone once real per-purok boundaries/areas exist. |
 
 ## Per-intervention effect models
 

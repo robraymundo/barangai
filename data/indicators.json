@@ -2,7 +2,7 @@
   "id": "brgy-alibagu",
   "name": "Alibagu",
   "city": "Ilagan City, Isabela",
-  "centroid": { "lat": 17.1465, "lng": 121.8805 },
+  "centroid": { "lat": 17.106, "lng": 121.865 },
   "dataSources": [
     "PSA 2020 Census (barangay population, age structure) — approximated",
     "NDRRMC / Project NOAH hazard exposure — modeled",
@@ -124,28 +124,28 @@
       "id": "F01",
       "type": "hospital",
       "name": "Ilagan City District Health Center (nearest)",
-      "location": { "lat": 17.1492, "lng": 121.8896 },
+      "location": { "lat": 17.114, "lng": 121.867 },
       "zoneId": "Z02"
     },
     {
       "id": "F02",
       "type": "evacuation_center",
       "name": "Alibagu Centro Covered Court",
-      "location": { "lat": 17.147, "lng": 121.881 },
+      "location": { "lat": 17.117, "lng": 121.87 },
       "zoneId": "Z02"
     },
     {
       "id": "F03",
       "type": "school",
       "name": "Alibagu Elementary School",
-      "location": { "lat": 17.1455, "lng": 121.8822 },
+      "location": { "lat": 17.112, "lng": 121.884 },
       "zoneId": "Z03"
     },
     {
       "id": "F04",
       "type": "fire_station",
       "name": "Ilagan Central Fire Station (nearest)",
-      "location": { "lat": 17.1503, "lng": 121.8901 },
+      "location": { "lat": 17.113, "lng": 121.866 },
       "zoneId": "Z02"
     }
   ]
