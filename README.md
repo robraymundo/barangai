@@ -1,53 +1,82 @@
-```markdown
 # 🌟 BarangAI
 
-An AI-powered Digital Twin and Decision Intelligence Platform that lets local governments simulate the impact of projects and policies *before* spending a single peso.
+An AI-powered Digital Twin & Decision Intelligence Platform that lets local governments simulate the impact of projects and policies *before* spending a single peso.
 
 ## 🚀 About the Project
 
 This project is developed as part of **SparkFest 2026**, a hackathon organized by **Google Developer Groups on Campus – Polytechnic University of the Philippines (GDG PUP)**.
 
-It aims to solve a real-world, community-based problem through technology, innovation, and collaboration — helping barangays and cities make smarter, evidence-based decisions for their communities.
+It aims to solve a real-world, community-based problem through technology, innovation, and collaboration — helping barangays and cities make smarter, evidence-based decisions for their communities. The MVP demonstrates the platform on **Barangay Alibagu, Ilagan City, Isabela**.
 
 ## 🎯 Problem Statement
 
-Local governments make hundreds of decisions every year — from infrastructure development and disaster preparedness to environmental planning and public service allocation. Yet these decisions are often based on historical reports, manual assessments, and limited datasets.
+Local governments make hundreds of decisions every year — infrastructure, disaster preparedness, environmental planning, and public-service allocation — yet these decisions often rely on historical reports, manual assessments, and intuition.
 
 This leads to recurring problems:
 
 - Public funds are invested without accurately predicting long-term outcomes.
-- Infrastructure projects can solve one problem while unintentionally creating another (e.g., road widening that increases urban heat or flooding).
-- Disaster preparedness tends to prioritize hazard *locations* rather than the *people* most vulnerable to those hazards.
-- Budget allocation relies heavily on experience and intuition instead of data.
-- Communities have no way to visualize the impact of a proposed project before it's built.
+- Infrastructure projects can solve one problem while creating another (e.g. road widening that worsens heat or flooding).
+- Disaster preparedness prioritizes hazard *locations* rather than the *people* most vulnerable to them.
+- Budget allocation depends on experience instead of data.
+- Communities cannot visualize a project's impact before it is built.
 
-Without a way to simulate future scenarios, local governments are forced to make expensive decisions with limited foresight — increasing the risk of inefficient spending, delayed interventions, and reduced community resilience. This matters because every misallocated peso is a service a community doesn't receive.
+Without a way to simulate future scenarios, officials make expensive decisions with limited foresight — increasing the risk of inefficient spending, delayed interventions, and reduced community resilience.
 
 ## 💡 Proposed Solution
 
-**BarangAI** creates a virtual model — a "digital twin" — of a barangay or city using geospatial, demographic, environmental, and infrastructure data.
+**BarangAI** creates a virtual model — a *digital twin* — of a barangay from geospatial, demographic, environmental, and infrastructure data.
 
-Instead of just displaying maps or reports, BarangAI lets decision-makers **simulate proposed projects, evaluate policies, identify vulnerable communities, and optimize resource allocation before implementation.**
-
-- **What it does:** Officials ask questions in plain language ("What if we build an evacuation center here?") and the platform predicts the outcomes — flooding reduction, traffic changes, carbon absorption, costs, and number of beneficiaries.
-- **How it solves the problem:** By previewing the future, officials can compare multiple scenarios, understand trade-offs, and choose the option that delivers the greatest social, economic, and environmental benefit.
-- **What makes it different:** Rather than *reacting* to problems after they happen, BarangAI empowers local governments to make **proactive, data-driven decisions** — and it focuses on *who* is most vulnerable, not just *where* the hazards are.
+- **What it does:** Officials ask questions in plain language ("What if we build an evacuation center here?") and the platform predicts the outcomes — flood reduction, carbon absorption, cooling, cost, and beneficiaries — then explains the reasoning.
+- **How it solves the problem:** By previewing the future, officials compare scenarios, understand trade-offs, and choose the option with the greatest social, economic, and environmental benefit.
+- **What makes it different:** A **deterministic scoring engine computes every number** (transparent, reproducible, defensible), while **Gemini only parses the question and explains the results** — never inventing figures. It focuses on *who* is most vulnerable, not just *where* hazards are, and runs even offline with graceful fallbacks.
 
 ## ⚙️ Features
 
-- **🤖 AI Scenario Simulator (Flagship)** — Ask infrastructure or policy "what-if" questions naturally and get predicted outcomes: flooding reduction, traffic flow, carbon absorption, urban heat reduction, maintenance costs, and estimated beneficiaries. One unified engine for both physical builds and policy changes.
-- **🏘️ Community Vulnerability Intelligence** — Goes beyond hazard mapping to identify *who* is most at risk. Each household or neighborhood gets a Vulnerability Score based on elderly population, children, PWDs, income, housing quality, transport access, hospital proximity, and flood/landslide exposure — with AI-recommended priority actions.
-- **💰 AI Budget Optimization Engine** — Officials enter a budget and a list of possible projects, and the AI ranks them by community impact, urgency, beneficiaries, cost, maintenance, and climate resilience. Each result includes a short, explainable rationale generated by Gemini.
-- **📊 Community Resilience Score** — A dynamic score per barangay drawn from disaster preparedness, healthcare access, infrastructure quality, sustainability, transport, and emergency response — and it recalculates live when a scenario is run (e.g., "62 → 78 after this intervention").
-- **🗺️ Community Analytics Dashboard** — A real-time executive view of population, infrastructure, environment, vulnerability, budget, and ongoing projects, all on one interactive map that ties the platform together.
+- **🤖 AI Scenario Simulator** — Ask a what-if question and get predicted resilience change, flood reduction, carbon, cooling, beneficiaries, and maintenance cost, with a plain-language explanation.
+- **🏘️ Community Vulnerability Intelligence** — Ranks zones by *who* is most at risk (elderly, children, PWDs, income, housing, access, hazard exposure) with recommended actions.
+- **💰 AI Budget Optimization Engine** — An exact 0/1 knapsack selects the project mix that maximizes community benefit under a given budget, with a per-project rationale.
+- **📊 Community Resilience Score** — A live 0–100 score across six indicators that recalculates after every simulation and tracks over time.
+- **🗺️ Community Analytics Dashboard** — One interactive Google Map plus panels tying the entire digital twin together.
 
-🧪 Tech Stack
-Frontend: (e.g. React, HTML, Flutter)
-Backend: (e.g. Node.js, Firebase, Python)
-Database: (e.g. MySQL, Firestore)
-Tools: (e.g. Figma, GitHub, etc.)
+## 🧪 Tech Stack
 
-🌐 Deployed Project
-Live Demo: https://your-deployed-link.com
-Alternative Link (if any): https://your-backup-link.com
-Github Link: https://github.com/Randylrnz/SparkFest-README
+- **Frontend:** Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4, Recharts
+- **Backend:** Next.js Route Handlers (Node), Google Gemini via `@google/genai`
+- **Database:** Firebase Firestore *(planned — scenario history & resilience timeline)*
+- **Tools:** Google Maps Platform (`@vis.gl/react-google-maps`), Vitest, Vercel, GitHub
+
+## 🛠️ Getting Started
+
+**Prerequisites:** Node.js 20+ and npm.
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. (Optional) configure keys — the app runs fully offline without them
+cp .env.example .env.local   # add GEMINI_API_KEY and NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+
+# 3. Run in development
+npm run dev                  # http://localhost:3000
+
+# Production build
+npm run build && npm start
+
+# Tests & type checking
+npm test                     # 58 Vitest tests
+npm run typecheck
+```
+
+Without API keys, scores are still fully computed, AI explanations use deterministic templates, and the map shows a colored-grid fallback. `.env.local` is gitignored, so your keys are never committed.
+
+**Environment variables:** `GEMINI_API_KEY` (live AI), `GEMINI_MODEL` (default `gemini-2.0-flash`), `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (interactive map), `NEXT_PUBLIC_FIREBASE_*` / `FIREBASE_SERVICE_ACCOUNT` (persistence, when wired).
+
+See [`docs/`](docs/) for the PRD, architecture, data model, and scenario coefficients (with assumptions, confidence levels, and sources).
+
+> ⚠️ BarangAI outputs are decision-support estimates from simplified models, intended for scenario comparison — not engineering-grade predictions. Alibagu figures are partly curated from public sources (PSA, NDRRMC, OSM) and partly synthetic for demonstration.
+
+## 🌐 Deployed Project
+
+- **Live Demo:** https://your-deployed-link.com *(to be added)*
+- **Alternative Link (if any):** https://your-backup-link.com *(to be added)*
+- **Github Link:** https://github.com/Randylrnz/SparkFest-README
