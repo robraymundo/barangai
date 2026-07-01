@@ -74,7 +74,7 @@ export default function OSMMap({ profile, geojson, vulnerabilityByZone }: Props)
         const { lat, lng } = polygonCentroid(feature.geometry.coordinates[0]);
         L.marker([lat, lng], {
           icon: L.divIcon({
-            html: `<div style="transform:translate(-50%,-50%)" class="whitespace-nowrap rounded-full bg-neutral-950/80 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-neutral-50 shadow-md ring-1 ring-white/15">${tier}</div>`,
+            html: `<div style="transform:translate(-50%,-50%);text-shadow:0 1px 3px rgba(0,0,0,0.9),0 0 2px rgba(0,0,0,0.9)" class="whitespace-nowrap text-[11px] font-bold tracking-wide text-white">${tier}</div>`,
             className: "",
             iconSize: [0, 0],
             iconAnchor: [0, 0],
