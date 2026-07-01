@@ -74,7 +74,7 @@ export default function ScenarioSimulator({
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && run(question)}
-            placeholder="e.g. What if we build an evacuation center in Riverside?"
+            placeholder="e.g. What if we build a park?"
             className="flex-1 rounded-lg border border-white/10 bg-neutral-800/60 px-3 py-2 text-sm text-neutral-100 placeholder-neutral-500 outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/20"
             aria-label="Scenario question"
           />
