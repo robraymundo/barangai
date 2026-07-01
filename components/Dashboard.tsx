@@ -8,6 +8,15 @@ import {
   type TwinResponse,
   type VulnerabilityResponse,
 } from "@/lib/client/api";
+import {
+  FlaskConical,
+  ShieldCheck,
+  Users,
+  Wallet,
+  Info,
+  Landmark,
+  type LucideIcon,
+} from "lucide-react";
 import { Spinner, Badge, Card } from "@/components/ui";
 import CommunityMap from "@/components/map/CommunityMap";
 import ScenarioSimulator from "@/components/panels/ScenarioSimulator";
@@ -17,22 +26,22 @@ import BudgetOptimizer from "@/components/panels/BudgetOptimizer";
 
 type TabKey = "simulate" | "resilience" | "vulnerability" | "budget" | "info";
 
-const TABS: Array<{ key: TabKey; label: string; icon: string }> = [
-  { key: "simulate", label: "Simulate", icon: "🤖" },
-  { key: "resilience", label: "Resilience", icon: "📊" },
-  { key: "vulnerability", label: "Vulnerability", icon: "🏘️" },
-  { key: "budget", label: "Budget", icon: "💰" },
-  { key: "info", label: "Info", icon: "ℹ️" },
+const TABS: Array<{ key: TabKey; label: string; icon: LucideIcon }> = [
+  { key: "simulate", label: "Simulate", icon: FlaskConical },
+  { key: "resilience", label: "Resilience", icon: ShieldCheck },
+  { key: "vulnerability", label: "Vulnerability", icon: Users },
+  { key: "budget", label: "Budget", icon: Wallet },
+  { key: "info", label: "Info", icon: Info },
 ];
 
 function DockButton({
   active,
-  icon,
+  icon: Icon,
   label,
   onClick,
 }: {
   active: boolean;
-  icon: string;
+  icon: LucideIcon;
   label: string;
   onClick: () => void;
 }) {
@@ -42,13 +51,13 @@ function DockButton({
       title={label}
       aria-label={label}
       aria-pressed={active}
-      className={`flex h-11 w-11 items-center justify-center rounded-xl text-lg transition ${
+      className={`flex h-11 w-11 items-center justify-center rounded-xl transition ${
         active
           ? "bg-emerald-500 text-neutral-950 shadow-lg shadow-emerald-500/30"
           : "text-neutral-300 hover:bg-white/10 hover:text-white"
       }`}
     >
-      <span aria-hidden>{icon}</span>
+      <Icon size={19} strokeWidth={2} aria-hidden />
     </button>
   );
 }
@@ -131,8 +140,8 @@ export default function Dashboard() {
       {/* Top bar: brand + live resilience readout. */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-4">
         <GlassChip className="pointer-events-auto flex items-center gap-2.5 px-4 py-2.5">
-          <span className="text-lg" aria-hidden>
-            🌟
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-400" aria-hidden>
+            <Landmark size={18} strokeWidth={2} />
           </span>
           <div>
             <div className="text-sm font-semibold leading-none text-neutral-50">BarangAI</div>
