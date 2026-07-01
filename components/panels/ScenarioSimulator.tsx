@@ -91,10 +91,7 @@ export default function ScenarioSimulator({
           {EXAMPLES.map((ex) => (
             <button
               key={ex}
-              onClick={() => {
-                setQuestion(ex);
-                run(ex);
-              }}
+              onClick={() => setQuestion(ex)}
               disabled={loading}
               className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-neutral-400 transition hover:border-emerald-500/40 hover:text-emerald-300 disabled:opacity-40"
             >
