@@ -15,6 +15,10 @@ import {
   Wallet,
   Info,
   Landmark,
+  Menu,
+  X,
+  Map as MapIcon,
+  Building2,
   type LucideIcon,
 } from "lucide-react";
 import { Spinner, Badge, Card } from "@/components/ui";
@@ -26,15 +30,26 @@ import BudgetOptimizer from "@/components/panels/BudgetOptimizer";
 
 type TabKey = "simulate" | "resilience" | "vulnerability" | "budget" | "info";
 
-const TABS: Array<{ key: TabKey; label: string; icon: LucideIcon }> = [
-  { key: "simulate", label: "Simulate", icon: FlaskConical },
-  { key: "resilience", label: "Resilience", icon: ShieldCheck },
-  { key: "vulnerability", label: "Vulnerability", icon: Users },
-  { key: "budget", label: "Budget", icon: Wallet },
-  { key: "info", label: "Info", icon: Info },
+const NAV_GROUPS: Array<{ label: string; items: Array<{ key: TabKey; label: string; icon: LucideIcon }> }> = [
+  {
+    label: "Overview",
+    items: [{ key: "resilience", label: "Resilience", icon: ShieldCheck }],
+  },
+  {
+    label: "AI Intelligence",
+    items: [
+      { key: "simulate", label: "Scenario Simulator", icon: FlaskConical },
+      { key: "vulnerability", label: "Vulnerability", icon: Users },
+      { key: "budget", label: "Budget Optimizer", icon: Wallet },
+    ],
+  },
+  {
+    label: "System",
+    items: [{ key: "info", label: "About", icon: Info }],
+  },
 ];
 
-function DockButton({
+function NavItem({
   active,
   icon: Icon,
   label,
@@ -48,27 +63,16 @@ function DockButton({
   return (
     <button
       onClick={onClick}
-      title={label}
-      aria-label={label}
       aria-pressed={active}
-      className={`flex h-11 w-11 items-center justify-center rounded-xl transition ${
+      className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm font-semibold transition ${
         active
           ? "bg-linear-to-br from-brand to-brand-2 text-white shadow-lg shadow-brand/30"
           : "text-ink-dim hover:bg-surface-alt hover:text-ink"
       }`}
     >
-      <Icon size={19} strokeWidth={2} aria-hidden />
+      <Icon size={17} strokeWidth={2} aria-hidden className="shrink-0" />
+      {label}
     </button>
-  );
-}
-
-function GlassChip({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div
-      className={`pointer-events-auto rounded-2xl border border-line bg-white/80 shadow-[0_4px_14px_rgba(17,24,39,0.08)] backdrop-blur-xl ${className}`}
-    >
-      {children}
-    </div>
   );
 }
 
@@ -78,7 +82,8 @@ export default function Dashboard() {
   const [vuln, setVuln] = useState<VulnerabilityResponse | null>(null);
   const [sims, setSims] = useState<SimulateResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<TabKey | null>("simulate");
+  const [activeTab, setActiveTab] = useState<TabKey>("simulate");
+  const [mobileNav, setMobileNav] = useState(false);
 
   useEffect(() => {
     Promise.all([api.twin(), api.resilience(), api.vulnerability()])
@@ -124,126 +129,265 @@ export default function Dashboard() {
     );
   }
 
-  const toggle = (key: TabKey) => setActiveTab((prev) => (prev === key ? null : key));
+  const select = (key: TabKey) => {
+    setActiveTab(key);
+    setMobileNav(false);
+  };
+
+  const kpis: Array<{ icon: LucideIcon; chip: string; value: string; label: string; bar?: number }> = [
+    { icon: ShieldCheck, chip: "bg-brand", value: `${Math.round(currentScore)}/100`, label: "Community Resilience", bar: currentScore },
+    { icon: MapIcon, chip: "bg-[#F59E0B]", value: String(vuln.ranked.length), label: "Zones tracked" },
+    { icon: Building2, chip: "bg-brand-2", value: String(twin.profile.facilities.length), label: "Facilities mapped" },
+    { icon: Users, chip: "bg-[#EF4444]", value: vuln.ranked[0]?.name ?? "—", label: "Most vulnerable zone" },
+    { icon: FlaskConical, chip: "bg-[#8B5CF6]", value: String(sims.length), label: "Simulations run" },
+  ];
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden bg-page text-ink">
-      {/* Map fills the entire viewport as the base layer. */}
-      <div className="absolute inset-0 z-0">
-        <CommunityMap profile={twin.profile} geojson={twin.geojson} vulnerabilityByZone={vulnerabilityByZone} />
-      </div>
+    <div className="flex h-dvh w-full overflow-hidden bg-page text-ink">
+      {/* Mobile nav backdrop */}
+      {mobileNav && (
+        <div
+          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm md:hidden"
+          onClick={() => setMobileNav(false)}
+          aria-hidden
+        />
+      )}
 
-      {/* Subtle scrims behind the overlays for legibility over map tiles. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-linear-to-b from-white/70 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-linear-to-t from-white/50 to-transparent" />
-
-      {/* Top bar: brand + live resilience readout. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-4">
-        <GlassChip className="pointer-events-auto flex items-center gap-2.5 px-4 py-2.5">
+      {/* ============ SIDEBAR ============ */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-line bg-surface transition-transform duration-200 ease-out md:static md:translate-x-0 ${
+          mobileNav ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex items-center gap-3 border-b border-line px-5 py-5">
           <span
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-brand to-emerald-400 text-white shadow-md shadow-brand/30"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-brand to-emerald-400 text-white shadow-md shadow-brand/30"
             aria-hidden
           >
-            <Landmark size={18} strokeWidth={2} />
+            <Landmark size={19} strokeWidth={2} />
           </span>
           <div>
-            <div className="text-sm font-extrabold leading-none text-ink">
+            <div className="text-[15px] font-extrabold leading-none">
               Barang<span className="text-brand">AI</span>
             </div>
-            <div className="mt-0.5 text-[11px] font-medium text-ink-dim">
-              {twin.profile.name} · {twin.profile.city}
-            </div>
+            <div className="mt-1 text-[11px] font-medium text-ink-dim">Decision Intelligence</div>
           </div>
-        </GlassChip>
-
-        <GlassChip className="pointer-events-auto flex items-center gap-2 px-4 py-2.5">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-dim">Resilience</span>
-          <span className="text-xl font-extrabold tabular-nums text-ink">{Math.round(currentScore)}</span>
-          {sims.length > 0 && (
-            <Badge tone={currentScore >= baseline ? "green" : "red"}>
-              {currentScore >= baseline ? "+" : ""}
-              {Math.round((currentScore - baseline) * 10) / 10}
-            </Badge>
-          )}
-        </GlassChip>
-      </div>
-
-      {/* Legend: what the map coloring means. */}
-      <div className="pointer-events-none absolute bottom-4 left-4 z-30 hidden sm:block">
-        <GlassChip className="pointer-events-auto px-3 py-2.5">
-          <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-ink-dim">
-            Vulnerability
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-medium text-ink-dim">Low</span>
-            <div
-              className="h-1.5 w-24 rounded-full"
-              style={{ background: "linear-gradient(to right, #16a34a, #f59e0b, #ef4444)" }}
-            />
-            <span className="text-[10px] font-medium text-ink-dim">High</span>
-          </div>
-        </GlassChip>
-      </div>
-
-      {/* Sliding panel — mounts every feature but only shows the active one, so switching
-          tabs never resets typed input or computed results. */}
-      <div
-        className={`fixed z-20 overflow-y-auto rounded-[20px] border border-line bg-white/90 p-4 shadow-[0_20px_40px_-12px_rgba(17,24,39,0.18)] backdrop-blur-xl transition-all duration-200 ease-out
-          inset-x-4 bottom-24 max-h-[65vh]
-          sm:inset-x-auto sm:bottom-4 sm:left-auto sm:right-24 sm:top-20 sm:max-h-none sm:w-100
-          ${activeTab ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0 sm:translate-x-4 sm:translate-y-0"}`}
-      >
-        <button
-          onClick={() => setActiveTab(null)}
-          aria-label="Close panel"
-          className="absolute right-3 top-3 z-10 rounded-lg p-1 text-ink-faint transition hover:bg-surface-alt hover:text-ink"
-        >
-          ✕
-        </button>
-
-        <div className={activeTab === "simulate" ? "" : "hidden"}>
-          <ScenarioSimulator onSimulated={(res) => setSims((prev) => [...prev, res])} />
+          <button
+            className="ml-auto rounded-lg p-1 text-ink-faint hover:bg-surface-alt hover:text-ink md:hidden"
+            onClick={() => setMobileNav(false)}
+            aria-label="Close menu"
+          >
+            <X size={18} />
+          </button>
         </div>
-        <div className={activeTab === "resilience" ? "" : "hidden"}>
-          <ResiliencePanel score={currentScore} components={resilience.components} timeline={timeline} />
-        </div>
-        <div className={activeTab === "vulnerability" ? "" : "hidden"}>
-          <VulnerabilityPanel ranked={vuln.ranked} summary={vuln.summary} recommendations={vuln.recommendations} />
-        </div>
-        <div className={activeTab === "budget" ? "" : "hidden"}>
-          <BudgetOptimizer />
-        </div>
-        <div className={activeTab === "info" ? "" : "hidden"}>
-          <Card bare title="About this demo" icon={Info}>
-            <div className="flex flex-col gap-3 text-sm text-ink-dim">
-              <p className="leading-relaxed">
-                BarangAI outputs are decision-support estimates from simplified models, intended
-                for scenario comparison — not engineering-grade predictions.
-              </p>
-              <div>
-                <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">
-                  Data sources
-                </div>
-                <ul className="list-inside list-disc space-y-0.5 text-ink-dim">
-                  {twin.profile.dataSources.map((s) => (
-                    <li key={s}>{s}</li>
-                  ))}
-                </ul>
+
+        <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Primary">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.label}>
+              <div className="px-3.5 pb-1.5 pt-4 text-[11px] font-bold uppercase tracking-wider text-ink-faint first:pt-0">
+                {group.label}
+              </div>
+              <div className="flex flex-col gap-1">
+                {group.items.map((item) => (
+                  <NavItem
+                    key={item.key}
+                    active={activeTab === item.key}
+                    icon={item.icon}
+                    label={item.label}
+                    onClick={() => select(item.key)}
+                  />
+                ))}
               </div>
             </div>
-          </Card>
-        </div>
-      </div>
+          ))}
+        </nav>
 
-      {/* Dock rail — always visible; toggles which panel slides in. */}
-      <div
-        className="pointer-events-auto fixed z-30 flex gap-1.5 rounded-2xl border border-line bg-white/80 p-1.5 shadow-[0_4px_14px_rgba(17,24,39,0.08)] backdrop-blur-xl
-          bottom-4 left-1/2 -translate-x-1/2 flex-row
-          sm:bottom-auto sm:left-auto sm:right-4 sm:top-1/2 sm:translate-x-0 sm:-translate-y-1/2 sm:flex-col"
-      >
-        {TABS.map((t) => (
-          <DockButton key={t.key} active={activeTab === t.key} icon={t.icon} label={t.label} onClick={() => toggle(t.key)} />
-        ))}
+        <div className="border-t border-line p-4">
+          <div className="flex items-center gap-2.5 rounded-2xl bg-surface-alt px-3 py-2.5">
+            <span className="relative flex h-2.5 w-2.5" aria-hidden>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-2 opacity-60" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-2" />
+            </span>
+            <div>
+              <div className="text-xs font-bold">Digital twin active</div>
+              <div className="text-[11px] text-ink-dim">
+                {twin.profile.name} · {twin.profile.city}
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* ============ MAIN ============ */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Topbar */}
+        <header className="flex h-16 shrink-0 items-center gap-3 border-b border-line bg-white/70 px-4 backdrop-blur-xl sm:px-6">
+          <button
+            className="rounded-xl border border-line bg-surface p-2 text-ink-dim hover:bg-surface-alt hover:text-ink md:hidden"
+            onClick={() => setMobileNav(true)}
+            aria-label="Open menu"
+          >
+            <Menu size={18} />
+          </button>
+          <div className="hidden text-sm font-medium text-ink-dim sm:block">
+            Digital twin · {twin.profile.name}, {twin.profile.city}
+          </div>
+          <div className="ml-auto flex items-center gap-2 rounded-2xl border border-line bg-surface px-4 py-2 shadow-[0_2px_8px_rgba(17,24,39,0.05)]">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-dim">Resilience</span>
+            <span className="text-lg font-extrabold tabular-nums">{Math.round(currentScore)}</span>
+            {sims.length > 0 && (
+              <Badge tone={currentScore >= baseline ? "green" : "red"}>
+                {currentScore >= baseline ? "+" : ""}
+                {Math.round((currentScore - baseline) * 10) / 10}
+              </Badge>
+            )}
+          </div>
+        </header>
+
+        {/* Scrolling content */}
+        <main className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+          <div className="mx-auto flex max-w-[1600px] flex-col gap-5">
+            {/* View head */}
+            <div>
+              <h1 className="text-2xl font-extrabold sm:text-[26px]">{twin.profile.name}</h1>
+              <p className="mt-1 text-sm text-ink-dim">
+                Real-time digital twin overview · {twin.profile.city}
+              </p>
+            </div>
+
+            {/* Hero banner */}
+            <div className="relative overflow-hidden rounded-[28px] bg-linear-to-br from-brand-dark to-brand p-8 text-white shadow-[0_20px_40px_-12px_rgba(17,24,39,0.3)] sm:p-10">
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{ background: "radial-gradient(circle at 85% 20%, rgba(255,255,255,0.12), transparent 55%)" }}
+                aria-hidden
+              />
+              <Landmark
+                size={190}
+                strokeWidth={1.5}
+                className="pointer-events-none absolute -right-4 top-1/2 hidden -translate-y-1/2 text-white/10 lg:block"
+                aria-hidden
+              />
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3.5 py-1.5 text-[11px] font-bold tracking-wide">
+                AI Digital Twin
+              </span>
+              <h2 className="mt-4 max-w-lg text-[26px] font-extrabold leading-tight sm:text-3xl">
+                Smarter decisions for {twin.profile.name}
+              </h2>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-white/80">
+                Simulate projects and policies on the digital twin before spending public funds — from
+                flood mitigation to budget allocation.
+              </p>
+              <button
+                onClick={() => select("simulate")}
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-brand-dark shadow-md transition hover:-translate-y-px hover:shadow-lg"
+              >
+                <FlaskConical size={16} strokeWidth={2.25} aria-hidden />
+                Run a Simulation
+              </button>
+              <span className="absolute bottom-8 right-8 hidden items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-2 text-xs font-bold backdrop-blur md:inline-flex">
+                <ShieldCheck size={14} aria-hidden />
+                Resilience {Math.round(currentScore)}/100
+              </span>
+            </div>
+
+            {/* KPI cards — all values come from live app data */}
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              {kpis.map((k) => (
+                <div
+                  key={k.label}
+                  className="rounded-[20px] border border-line bg-surface p-4 shadow-[0_2px_8px_rgba(17,24,39,0.05)]"
+                >
+                  <span
+                    className={`flex h-9 w-9 items-center justify-center rounded-xl text-white ${k.chip}`}
+                    aria-hidden
+                  >
+                    <k.icon size={16} strokeWidth={2.25} />
+                  </span>
+                  <div className="mt-3 truncate text-xl font-extrabold tabular-nums" title={k.value}>
+                    {k.value}
+                  </div>
+                  <div className="mt-0.5 text-xs font-semibold text-ink-dim">{k.label}</div>
+                  {k.bar != null && (
+                    <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-surface-alt">
+                      <div
+                        className="h-full rounded-full bg-linear-to-r from-brand to-brand-2 transition-all duration-700"
+                        style={{ width: `${Math.max(0, Math.min(100, k.bar))}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Map + active feature panel */}
+            <div className="grid items-start gap-4 lg:grid-cols-[3fr_2fr]">
+              <section className="rounded-[20px] border border-line bg-surface p-4 shadow-[0_2px_8px_rgba(17,24,39,0.05)]">
+                <h3 className="flex items-center gap-2 px-1 text-sm font-bold">
+                  <MapIcon size={15} strokeWidth={2.25} className="text-brand" aria-hidden />
+                  Community Map
+                </h3>
+                <div className="relative mt-3 h-105 overflow-hidden rounded-2xl border border-line">
+                  <CommunityMap
+                    profile={twin.profile}
+                    geojson={twin.geojson}
+                    vulnerabilityByZone={vulnerabilityByZone}
+                  />
+                  <div className="absolute bottom-3 left-3 z-500 rounded-xl border border-line bg-white/85 px-3 py-2 backdrop-blur">
+                    <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-ink-dim">
+                      Vulnerability
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-medium text-ink-dim">Low</span>
+                      <div
+                        className="h-1.5 w-24 rounded-full"
+                        style={{ background: "linear-gradient(to right, #16a34a, #f59e0b, #ef4444)" }}
+                      />
+                      <span className="text-[10px] font-medium text-ink-dim">High</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Every feature stays mounted; only the active one is visible, so switching
+                  never resets typed input or computed results. */}
+              <section className="rounded-[20px] border border-line bg-surface p-5 shadow-[0_2px_8px_rgba(17,24,39,0.05)]">
+                <div className={activeTab === "simulate" ? "" : "hidden"}>
+                  <ScenarioSimulator onSimulated={(res) => setSims((prev) => [...prev, res])} />
+                </div>
+                <div className={activeTab === "resilience" ? "" : "hidden"}>
+                  <ResiliencePanel score={currentScore} components={resilience.components} timeline={timeline} />
+                </div>
+                <div className={activeTab === "vulnerability" ? "" : "hidden"}>
+                  <VulnerabilityPanel ranked={vuln.ranked} summary={vuln.summary} recommendations={vuln.recommendations} />
+                </div>
+                <div className={activeTab === "budget" ? "" : "hidden"}>
+                  <BudgetOptimizer />
+                </div>
+                <div className={activeTab === "info" ? "" : "hidden"}>
+                  <Card bare title="About this demo" icon={Info}>
+                    <div className="flex flex-col gap-3 text-sm text-ink-dim">
+                      <p className="leading-relaxed">
+                        BarangAI outputs are decision-support estimates from simplified models, intended
+                        for scenario comparison — not engineering-grade predictions.
+                      </p>
+                      <div>
+                        <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">
+                          Data sources
+                        </div>
+                        <ul className="list-inside list-disc space-y-0.5 text-ink-dim">
+                          {twin.profile.dataSources.map((s) => (
+                            <li key={s}>{s}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              </section>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
