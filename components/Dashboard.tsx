@@ -20,6 +20,8 @@ import {
   X,
   Map as MapIcon,
   Building2,
+  Leaf,
+  MessagesSquare,
   type LucideIcon,
 } from "lucide-react";
 import { Spinner, Badge } from "@/components/ui";
@@ -28,8 +30,18 @@ import ScenarioSimulator from "@/components/panels/ScenarioSimulator";
 import ResiliencePanel, { type TimelinePoint } from "@/components/panels/ResiliencePanel";
 import VulnerabilityPanel from "@/components/panels/VulnerabilityPanel";
 import BudgetOptimizer from "@/components/panels/BudgetOptimizer";
+import EnvironmentalIntelligence from "@/components/panels/EnvironmentalIntelligence";
+import PolicyImpactSimulator from "@/components/panels/PolicyImpactSimulator";
 
-type ViewKey = "dashboard" | "simulate" | "resilience" | "vulnerability" | "budget" | "info";
+type ViewKey =
+  | "dashboard"
+  | "simulate"
+  | "resilience"
+  | "vulnerability"
+  | "budget"
+  | "environment"
+  | "policy"
+  | "info";
 
 const NAV_GROUPS: Array<{ label: string; items: Array<{ key: ViewKey; label: string; icon: LucideIcon }> }> = [
   {
@@ -45,6 +57,8 @@ const NAV_GROUPS: Array<{ label: string; items: Array<{ key: ViewKey; label: str
       { key: "simulate", label: "Scenario Simulator", icon: FlaskConical },
       { key: "vulnerability", label: "Vulnerability", icon: Users },
       { key: "budget", label: "Budget Optimizer", icon: Wallet },
+      { key: "environment", label: "Climate & Environment", icon: Leaf },
+      { key: "policy", label: "Policy Impact Simulator", icon: MessagesSquare },
     ],
   },
   {
@@ -421,6 +435,27 @@ export default function Dashboard() {
               <PanelCard>
                 <BudgetOptimizer />
               </PanelCard>
+            </div>
+
+            {/* ---------- CLIMATE & ENVIRONMENTAL INTELLIGENCE ---------- */}
+            <div className={activeView === "environment" ? "flex flex-col gap-5" : "hidden"}>
+              <ViewHead
+                title="Climate & Environmental Intelligence"
+                subtitle="Analyze environmental risk layers and simulate green interventions"
+              />
+              {activeView === "environment" && (
+                <EnvironmentalIntelligence
+                  profile={twin.profile}
+                  geojson={twin.geojson}
+                  onSimulated={(res) => setSims((prev) => [...prev, res])}
+                />
+              )}
+            </div>
+
+            {/* ---------- POLICY IMPACT SIMULATOR ---------- */}
+            <div className={activeView === "policy" ? "flex flex-col gap-5" : "hidden"}>
+              <ViewHead title="Policy Impact Simulator" subtitle="Simulate policies in natural language and compare outcomes" />
+              <PolicyImpactSimulator onSimulated={(res) => setSims((prev) => [...prev, res])} />
             </div>
 
             {/* ---------- ABOUT ---------- */}

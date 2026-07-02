@@ -2,6 +2,7 @@
 export { isAiEnabled, GEMINI_MODEL } from "./client";
 export { parseScenario } from "./parse";
 export { explainSimulation, explainVulnerability, explainBudget } from "./explain";
+export { explainEnvironment, explainPolicy } from "./explainNew";
 export {
   CANNED_RESPONSES,
   matchCanned,
