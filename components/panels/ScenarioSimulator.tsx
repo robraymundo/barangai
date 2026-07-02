@@ -30,9 +30,9 @@ function DeltaGrid({ res }: { res: SimulateResponse }) {
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
       {items.map((it) => (
-        <div key={it.label} className="rounded-lg bg-white/5 px-3 py-2">
-          <div className="text-xs text-neutral-400">{it.label}</div>
-          <div className="text-sm font-semibold tabular-nums text-neutral-50">{it.value}</div>
+        <div key={it.label} className="rounded-lg border border-line bg-surface px-3 py-2">
+          <div className="text-xs font-medium text-ink-dim">{it.label}</div>
+          <div className="text-sm font-bold tabular-nums text-ink">{it.value}</div>
         </div>
       ))}
     </div>
@@ -76,13 +76,13 @@ export default function ScenarioSimulator({
             onChange={(e) => setQuestion(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && run(question)}
             placeholder="e.g. What if we build a park?"
-            className="flex-1 rounded-lg border border-white/10 bg-neutral-800/60 px-3 py-2 text-sm text-neutral-100 placeholder-neutral-500 outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/20"
+            className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink placeholder-ink-faint outline-none transition focus:border-brand focus:ring-4 focus:ring-[#DCFCE7]"
             aria-label="Scenario question"
           />
           <button
             onClick={() => run(question)}
             disabled={loading || !question.trim()}
-            className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition hover:bg-emerald-400 disabled:opacity-40"
+            className="rounded-full bg-linear-to-br from-brand to-brand-2 px-5 py-2 text-sm font-bold text-white shadow-md shadow-brand/25 transition hover:-translate-y-px hover:shadow-lg hover:shadow-brand/30 disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0"
           >
             {loading ? "Simulating…" : "Simulate"}
           </button>
@@ -94,7 +94,7 @@ export default function ScenarioSimulator({
               key={ex}
               onClick={() => setQuestion(ex)}
               disabled={loading}
-              className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-neutral-400 transition hover:border-emerald-500/40 hover:text-emerald-300 disabled:opacity-40"
+              className="rounded-full border border-line bg-surface px-2.5 py-1 text-xs font-medium text-ink-dim transition hover:bg-surface-alt hover:text-ink disabled:opacity-40"
             >
               {ex}
             </button>
@@ -102,23 +102,23 @@ export default function ScenarioSimulator({
         </div>
 
         {loading && <Spinner label="Running deterministic model + AI explanation…" />}
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
 
         {res && !loading && (
-          <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+          <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface-alt/60 p-4">
             <div className="flex items-center gap-3">
-              <span className="text-sm text-neutral-400">Community Resilience</span>
-              <span className="text-lg font-semibold tabular-nums text-neutral-50">{res.result.before.resilience}</span>
-              <span aria-hidden className="text-neutral-500">→</span>
-              <span className="text-lg font-semibold tabular-nums text-neutral-50">{res.result.after.resilience}</span>
+              <span className="text-sm font-medium text-ink-dim">Community Resilience</span>
+              <span className="text-lg font-extrabold tabular-nums text-ink">{res.result.before.resilience}</span>
+              <span aria-hidden className="text-ink-faint">→</span>
+              <span className="text-lg font-extrabold tabular-nums text-ink">{res.result.after.resilience}</span>
               <Badge tone={delta > 0 ? "green" : delta < 0 ? "red" : "neutral"}>
                 {delta > 0 ? "+" : ""}
                 {fmt(delta)}
               </Badge>
             </div>
             <DeltaGrid res={res} />
-            <p className="whitespace-pre-line text-sm leading-relaxed text-neutral-300">{res.explanation}</p>
-            <p className="text-xs text-neutral-500">
+            <p className="whitespace-pre-line text-sm leading-relaxed text-ink-dim">{res.explanation}</p>
+            <p className="text-xs text-ink-faint">
               Decision-support estimate from a simplified model — not an engineering prediction.
             </p>
           </div>

@@ -15,7 +15,7 @@ interface Props {
 }
 
 /**
- * Keyless interactive map (CARTO dark basemap over Leaflet). Used as the fallback when no
+ * Keyless interactive map (CARTO light basemap over Leaflet). Used as the fallback when no
  * Google Maps API key is configured, so Feature 5 is genuinely interactive with zero setup.
  * Leaflet is dynamically imported inside the effect to avoid any SSR/window access.
  */
@@ -35,7 +35,7 @@ export default function OSMMap({ profile, geojson, vulnerabilityByZone }: Props)
         [profile.centroid.lat, profile.centroid.lng],
         14,
       );
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
         attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
         subdomains: "abcd",
         maxZoom: 19,
@@ -46,7 +46,7 @@ export default function OSMMap({ profile, geojson, vulnerabilityByZone }: Props)
         style: (feature) => {
           const zoneId = feature?.properties?.zoneId as string;
           const score = vulnerabilityByZone[zoneId] ?? 0;
-          return { color: "#9ca3af", weight: 1, fillColor: scoreColor(score, "goodLow"), fillOpacity: 0.55 };
+          return { color: "#ffffff", weight: 1.5, fillColor: scoreColor(score, "goodLow"), fillOpacity: 0.55 };
         },
         onEachFeature: (feature, lyr) => {
           const zoneId = feature.properties?.zoneId as string;
@@ -74,7 +74,7 @@ export default function OSMMap({ profile, geojson, vulnerabilityByZone }: Props)
         const { lat, lng } = polygonCentroid(feature.geometry.coordinates[0]);
         L.marker([lat, lng], {
           icon: L.divIcon({
-            html: `<div style="transform:translate(-50%,-50%);text-shadow:0 1px 3px rgba(0,0,0,0.9),0 0 2px rgba(0,0,0,0.9)" class="whitespace-nowrap text-[11px] font-bold tracking-wide text-white">${tier}</div>`,
+            html: `<div style="transform:translate(-50%,-50%);color:#0B2318;text-shadow:0 1px 3px rgba(255,255,255,0.95),0 0 2px rgba(255,255,255,0.95)" class="whitespace-nowrap text-[11px] font-bold tracking-wide">${tier}</div>`,
             className: "",
             iconSize: [0, 0],
             iconAnchor: [0, 0],
@@ -87,8 +87,8 @@ export default function OSMMap({ profile, geojson, vulnerabilityByZone }: Props)
       for (const f of profile.facilities) {
         L.circleMarker([f.location.lat, f.location.lng], {
           radius: 6,
-          color: "#38bdf8",
-          fillColor: "#0ea5e9",
+          color: "#ffffff",
+          fillColor: "#15803D",
           fillOpacity: 0.9,
           weight: 2,
         })

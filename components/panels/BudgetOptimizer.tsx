@@ -43,7 +43,7 @@ export default function BudgetOptimizer() {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <label className="flex-1 text-sm">
-            <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral-500">
+            <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-dim">
               Available budget (PHP)
             </span>
             <input
@@ -52,55 +52,55 @@ export default function BudgetOptimizer() {
               step={500_000}
               value={budget}
               onChange={(e) => setBudget(Number(e.target.value))}
-              className="w-full rounded-lg border border-white/10 bg-neutral-800/60 px-3 py-2 text-sm tabular-nums text-neutral-100 outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/20"
+              className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm tabular-nums text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-[#DCFCE7]"
             />
           </label>
           <button
             onClick={run}
             disabled={loading || budget <= 0}
-            className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition hover:bg-emerald-400 disabled:opacity-40"
+            className="rounded-full bg-linear-to-br from-brand to-brand-2 px-5 py-2 text-sm font-bold text-white shadow-md shadow-brand/25 transition hover:-translate-y-px hover:shadow-lg hover:shadow-brand/30 disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0"
           >
             {loading ? "Optimizing…" : "Optimize"}
           </button>
         </div>
 
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-ink-faint">
           {DEFAULT_PROJECTS.length} candidate projects · exact knapsack maximizes total benefit under budget.
         </p>
 
         {loading && <Spinner />}
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
 
         {data && !loading && (
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Badge tone="green">{data.result.selected.length} funded</Badge>
-              <span className="text-neutral-400">
+              <span className="text-ink-dim">
                 {peso(data.result.totalCost)} of {peso(data.result.budget)} · total benefit{" "}
                 {Math.round(data.result.totalBenefit)}
               </span>
             </div>
-            <p className="text-sm leading-relaxed text-neutral-300">{data.summary}</p>
+            <p className="text-sm leading-relaxed text-ink-dim">{data.summary}</p>
 
             <ul className="flex flex-col gap-2">
               {data.result.selected.map((s) => (
-                <li key={s.project.id} className="rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-3 py-2">
+                <li key={s.project.id} className="rounded-xl border border-[#BBE7C8] bg-[#DCFCE7]/60 px-3 py-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-neutral-100">✓ {s.project.name}</span>
-                    <span className="text-xs text-neutral-400 tabular-nums">
+                    <span className="text-sm font-semibold text-ink">✓ {s.project.name}</span>
+                    <span className="text-xs tabular-nums text-ink-dim">
                       {peso(s.project.cost)} · benefit {Math.round(s.benefit)}
                     </span>
                   </div>
                   {data.perProject[s.project.id] && (
-                    <p className="mt-0.5 text-xs text-neutral-400">{data.perProject[s.project.id]}</p>
+                    <p className="mt-0.5 text-xs text-ink-dim">{data.perProject[s.project.id]}</p>
                   )}
                 </li>
               ))}
               {data.result.rejected.map((r) => (
-                <li key={r.project.id} className="rounded-lg border border-white/5 bg-white/5 px-3 py-2 opacity-70">
+                <li key={r.project.id} className="rounded-xl border border-line bg-surface-alt/50 px-3 py-2 opacity-70">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-neutral-400">✕ {r.project.name}</span>
-                    <span className="text-xs text-neutral-500 tabular-nums">
+                    <span className="text-sm font-semibold text-ink-dim">✕ {r.project.name}</span>
+                    <span className="text-xs tabular-nums text-ink-faint">
                       {peso(r.project.cost)} · benefit {Math.round(r.benefit)}
                     </span>
                   </div>

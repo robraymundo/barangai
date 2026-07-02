@@ -16,19 +16,19 @@ export function Card({
   icon?: LucideIcon;
   children: ReactNode;
   className?: string;
-  /** Render without the glass surface/border — used inside a container that already
+  /** Render without the card surface/border — used inside a container that already
    *  provides one (e.g. the dashboard's floating dock panel), to avoid box-in-a-box. */
   bare?: boolean;
 }) {
   const header = (title || subtitle) && (
-    <header className={bare ? "mb-4" : "border-b border-white/10 px-5 py-4"}>
+    <header className={bare ? "mb-4" : "border-b border-line px-5 py-4"}>
       {title && (
-        <h2 className="flex items-center gap-2 text-base font-semibold text-neutral-50">
-          {Icon && <Icon size={18} strokeWidth={2} className="text-emerald-400" aria-hidden />}
+        <h2 className="flex items-center gap-2 text-base font-bold text-ink">
+          {Icon && <Icon size={18} strokeWidth={2} className="text-brand" aria-hidden />}
           {title}
         </h2>
       )}
-      {subtitle && <p className="mt-0.5 text-sm text-neutral-400">{subtitle}</p>}
+      {subtitle && <p className="mt-0.5 text-sm text-ink-dim">{subtitle}</p>}
     </header>
   );
 
@@ -43,7 +43,7 @@ export function Card({
 
   return (
     <section
-      className={`rounded-2xl border border-white/10 bg-neutral-900/60 shadow-xl shadow-black/20 backdrop-blur-xl ${className}`}
+      className={`rounded-[20px] border border-line bg-surface shadow-[0_4px_14px_rgba(17,24,39,0.06),0_2px_6px_rgba(17,24,39,0.05)] ${className}`}
     >
       {header}
       <div className="p-5">{children}</div>
@@ -53,24 +53,24 @@ export function Card({
 
 export function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
   return (
-    <div className="rounded-xl bg-white/5 px-4 py-3">
-      <div className="text-xs font-medium uppercase tracking-wide text-neutral-400">{label}</div>
-      <div className="mt-1 text-2xl font-semibold tabular-nums text-neutral-50">{value}</div>
-      {hint && <div className="mt-0.5 text-xs text-neutral-400">{hint}</div>}
+    <div className="rounded-xl border border-line bg-surface-alt px-4 py-3">
+      <div className="text-xs font-semibold uppercase tracking-wide text-ink-dim">{label}</div>
+      <div className="mt-1 text-2xl font-extrabold tabular-nums text-ink">{value}</div>
+      {hint && <div className="mt-0.5 text-xs text-ink-dim">{hint}</div>}
     </div>
   );
 }
 
 export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "green" | "amber" | "red" | "blue" }) {
   const tones: Record<string, string> = {
-    neutral: "bg-white/10 text-neutral-300 ring-1 ring-inset ring-white/10",
-    green: "bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-500/30",
-    amber: "bg-amber-500/15 text-amber-300 ring-1 ring-inset ring-amber-500/30",
-    red: "bg-red-500/15 text-red-300 ring-1 ring-inset ring-red-500/30",
-    blue: "bg-sky-500/15 text-sky-300 ring-1 ring-inset ring-sky-500/30",
+    neutral: "bg-surface-alt text-ink-dim ring-1 ring-inset ring-line",
+    green: "bg-[#DCFCE7] text-[#15803D] ring-1 ring-inset ring-[#BBE7C8]",
+    amber: "bg-[#FEF3C7] text-[#B45309] ring-1 ring-inset ring-[#F5E3A9]",
+    red: "bg-[#FEE2E2] text-[#DC2626] ring-1 ring-inset ring-[#F7C6C6]",
+    blue: "bg-sky-100 text-sky-700 ring-1 ring-inset ring-sky-200",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${tones[tone]}`}>
+    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${tones[tone]}`}>
       {children}
     </span>
   );
@@ -78,21 +78,21 @@ export function Badge({ children, tone = "neutral" }: { children: ReactNode; ton
 
 export function Spinner({ label }: { label?: string }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-neutral-400">
-      <span className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-700 border-t-emerald-400" />
+    <div className="flex items-center gap-2 text-sm text-ink-dim">
+      <span className="h-4 w-4 animate-spin rounded-full border-2 border-line border-t-brand" />
       {label ?? "Loading…"}
     </div>
   );
 }
 
-/** Interpolate red→amber→green where t=1 is "good". Tuned brighter for dark backgrounds. */
+/** Interpolate red→amber→green where t=1 is "good". */
 export function scoreColor(score: number, polarity: "goodHigh" | "goodLow"): string {
   const t = Math.max(0, Math.min(1, polarity === "goodHigh" ? score / 100 : 1 - score / 100));
-  // red-500 -> amber-500 -> green-500
+  // red-500 -> amber-500 -> green-600
   const stops = [
     { p: 0, c: [239, 68, 68] },
     { p: 0.5, c: [245, 158, 11] },
-    { p: 1, c: [34, 197, 94] },
+    { p: 1, c: [22, 163, 74] },
   ];
   let a = stops[0];
   let b = stops[stops.length - 1];
@@ -129,7 +129,7 @@ export function ScoreDial({
   return (
     <div className="flex flex-col items-center">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`Score ${score} of 100`}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#27272a" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#E3F0E7" strokeWidth={stroke} />
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -143,11 +143,17 @@ export function ScoreDial({
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
           style={{ transition: "stroke-dashoffset 500ms ease, stroke 500ms ease" }}
         />
-        <text x="50%" y="50%" dominantBaseline="central" textAnchor="middle" className="fill-neutral-50" style={{ fontSize: size * 0.26, fontWeight: 700 }}>
+        <text
+          x="50%"
+          y="50%"
+          dominantBaseline="central"
+          textAnchor="middle"
+          style={{ fontSize: size * 0.26, fontWeight: 800, fill: "#0B2318" }}
+        >
           {Math.round(score)}
         </text>
       </svg>
-      {label && <div className="mt-1 text-sm font-medium text-neutral-400">{label}</div>}
+      {label && <div className="mt-1 text-sm font-semibold text-ink-dim">{label}</div>}
     </div>
   );
 }

@@ -17,19 +17,19 @@ interface MapProps {
   vulnerabilityByZone: Record<string, number>;
 }
 
-/** Hand-authored dark map theme (feature/element stylers) matching the app shell. */
-const DARK_MAP_STYLE: google.maps.MapTypeStyle[] = [
-  { elementType: "geometry", stylers: [{ color: "#0f1115" }] },
-  { elementType: "labels.text.stroke", stylers: [{ color: "#0f1115" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#8a8f98" }] },
-  { featureType: "administrative", elementType: "geometry", stylers: [{ color: "#3a3f4b" }] },
+/** Hand-authored light civic map theme (feature/element stylers) matching the app shell. */
+const LIGHT_MAP_STYLE: google.maps.MapTypeStyle[] = [
+  { elementType: "geometry", stylers: [{ color: "#f2f7f2" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#ffffff" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#5c7568" }] },
+  { featureType: "administrative", elementType: "geometry", stylers: [{ color: "#d7e2d9" }] },
   { featureType: "poi", stylers: [{ visibility: "off" }] },
-  { featureType: "road", elementType: "geometry", stylers: [{ color: "#26292f" }] },
-  { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#8a8f98" }] },
-  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#33373f" }] },
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#ffffff" }] },
+  { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#93aa9c" }] },
+  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#e8efe9" }] },
   { featureType: "transit", stylers: [{ visibility: "off" }] },
-  { featureType: "water", elementType: "geometry", stylers: [{ color: "#0b1220" }] },
-  { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#4b5563" }] },
+  { featureType: "water", elementType: "geometry", stylers: [{ color: "#cfe3f5" }] },
+  { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#7c9ab0" }] },
 ];
 
 /** Imperative layer: draws GeoJSON zones colored by vulnerability + facility markers. */
@@ -46,8 +46,8 @@ function ZonesLayer({ profile, geojson, vulnerabilityByZone }: MapProps) {
       return {
         fillColor: scoreColor(score, "goodLow"),
         fillOpacity: 0.5,
-        strokeColor: "#9ca3af",
-        strokeWeight: 1,
+        strokeColor: "#ffffff",
+        strokeWeight: 1.5,
       };
     });
 
@@ -83,7 +83,7 @@ function ZonesLayer({ profile, geojson, vulnerabilityByZone }: MapProps) {
       return new google.maps.Marker({
         position: { lat, lng },
         map,
-        label: { text: tier, color: "#f5f5f5", fontSize: "11px", fontWeight: "600" },
+        label: { text: tier, color: "#0B2318", fontSize: "11px", fontWeight: "700" },
         icon: { path: google.maps.SymbolPath.CIRCLE, scale: 0, fillOpacity: 0, strokeOpacity: 0 },
         clickable: false,
       });
@@ -118,7 +118,7 @@ export default function CommunityMap(props: MapProps) {
         disableDefaultUI
         zoomControl
         clickableIcons={false}
-        styles={DARK_MAP_STYLE}
+        styles={LIGHT_MAP_STYLE}
         style={{ width: "100%", height: "100%" }}
       >
         <ZonesLayer {...props} />

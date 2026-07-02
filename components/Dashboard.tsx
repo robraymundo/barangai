@@ -53,8 +53,8 @@ function DockButton({
       aria-pressed={active}
       className={`flex h-11 w-11 items-center justify-center rounded-xl transition ${
         active
-          ? "bg-emerald-500 text-neutral-950 shadow-lg shadow-emerald-500/30"
-          : "text-neutral-300 hover:bg-white/10 hover:text-white"
+          ? "bg-linear-to-br from-brand to-brand-2 text-white shadow-lg shadow-brand/30"
+          : "text-ink-dim hover:bg-surface-alt hover:text-ink"
       }`}
     >
       <Icon size={19} strokeWidth={2} aria-hidden />
@@ -65,7 +65,7 @@ function DockButton({
 function GlassChip({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div
-      className={`pointer-events-auto rounded-2xl border border-white/10 bg-neutral-900/70 shadow-lg shadow-black/30 backdrop-blur-xl ${className}`}
+      className={`pointer-events-auto rounded-2xl border border-line bg-white/80 shadow-[0_4px_14px_rgba(17,24,39,0.08)] backdrop-blur-xl ${className}`}
     >
       {children}
     </div>
@@ -108,8 +108,8 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <div className="flex h-dvh w-full items-center justify-center bg-neutral-950 p-8">
-        <div className="max-w-md rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
+      <div className="flex h-dvh w-full items-center justify-center bg-page p-8">
+        <div className="max-w-md rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {error}
         </div>
       </div>
@@ -118,7 +118,7 @@ export default function Dashboard() {
 
   if (!twin || !resilience || !vuln) {
     return (
-      <div className="flex h-dvh w-full items-center justify-center bg-neutral-950">
+      <div className="flex h-dvh w-full items-center justify-center bg-page">
         <Spinner label="Loading BarangAI digital twin…" />
       </div>
     );
@@ -127,33 +127,38 @@ export default function Dashboard() {
   const toggle = (key: TabKey) => setActiveTab((prev) => (prev === key ? null : key));
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden bg-neutral-950 text-neutral-100">
+    <div className="relative h-dvh w-full overflow-hidden bg-page text-ink">
       {/* Map fills the entire viewport as the base layer. */}
       <div className="absolute inset-0 z-0">
         <CommunityMap profile={twin.profile} geojson={twin.geojson} vulnerabilityByZone={vulnerabilityByZone} />
       </div>
 
       {/* Subtle scrims behind the overlays for legibility over map tiles. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-linear-to-b from-black/50 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-linear-to-t from-black/40 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-linear-to-b from-white/70 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-linear-to-t from-white/50 to-transparent" />
 
       {/* Top bar: brand + live resilience readout. */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-4">
         <GlassChip className="pointer-events-auto flex items-center gap-2.5 px-4 py-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-400" aria-hidden>
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-brand to-emerald-400 text-white shadow-md shadow-brand/30"
+            aria-hidden
+          >
             <Landmark size={18} strokeWidth={2} />
           </span>
           <div>
-            <div className="text-sm font-semibold leading-none text-neutral-50">BarangAI</div>
-            <div className="mt-0.5 text-[11px] text-neutral-400">
+            <div className="text-sm font-extrabold leading-none text-ink">
+              Barang<span className="text-brand">AI</span>
+            </div>
+            <div className="mt-0.5 text-[11px] font-medium text-ink-dim">
               {twin.profile.name} · {twin.profile.city}
             </div>
           </div>
         </GlassChip>
 
         <GlassChip className="pointer-events-auto flex items-center gap-2 px-4 py-2.5">
-          <span className="text-[11px] font-medium uppercase tracking-wide text-neutral-400">Resilience</span>
-          <span className="text-xl font-bold tabular-nums text-neutral-50">{Math.round(currentScore)}</span>
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-dim">Resilience</span>
+          <span className="text-xl font-extrabold tabular-nums text-ink">{Math.round(currentScore)}</span>
           {sims.length > 0 && (
             <Badge tone={currentScore >= baseline ? "green" : "red"}>
               {currentScore >= baseline ? "+" : ""}
@@ -166,16 +171,16 @@ export default function Dashboard() {
       {/* Legend: what the map coloring means. */}
       <div className="pointer-events-none absolute bottom-4 left-4 z-30 hidden sm:block">
         <GlassChip className="pointer-events-auto px-3 py-2.5">
-          <div className="mb-1.5 text-[10px] font-medium uppercase tracking-wide text-neutral-400">
+          <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-ink-dim">
             Vulnerability
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-neutral-400">Low</span>
+            <span className="text-[10px] font-medium text-ink-dim">Low</span>
             <div
               className="h-1.5 w-24 rounded-full"
-              style={{ background: "linear-gradient(to right, #22c55e, #f59e0b, #ef4444)" }}
+              style={{ background: "linear-gradient(to right, #16a34a, #f59e0b, #ef4444)" }}
             />
-            <span className="text-[10px] text-neutral-400">High</span>
+            <span className="text-[10px] font-medium text-ink-dim">High</span>
           </div>
         </GlassChip>
       </div>
@@ -183,7 +188,7 @@ export default function Dashboard() {
       {/* Sliding panel — mounts every feature but only shows the active one, so switching
           tabs never resets typed input or computed results. */}
       <div
-        className={`fixed z-20 overflow-y-auto rounded-2xl border border-white/10 bg-neutral-900/80 p-4 shadow-2xl shadow-black/40 backdrop-blur-xl transition-all duration-200 ease-out
+        className={`fixed z-20 overflow-y-auto rounded-[20px] border border-line bg-white/90 p-4 shadow-[0_20px_40px_-12px_rgba(17,24,39,0.18)] backdrop-blur-xl transition-all duration-200 ease-out
           inset-x-4 bottom-24 max-h-[65vh]
           sm:inset-x-auto sm:bottom-4 sm:left-auto sm:right-24 sm:top-20 sm:max-h-none sm:w-100
           ${activeTab ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0 sm:translate-x-4 sm:translate-y-0"}`}
@@ -191,7 +196,7 @@ export default function Dashboard() {
         <button
           onClick={() => setActiveTab(null)}
           aria-label="Close panel"
-          className="absolute right-3 top-3 z-10 rounded-lg p-1 text-neutral-500 transition hover:bg-white/5 hover:text-neutral-200"
+          className="absolute right-3 top-3 z-10 rounded-lg p-1 text-ink-faint transition hover:bg-surface-alt hover:text-ink"
         >
           ✕
         </button>
@@ -210,16 +215,16 @@ export default function Dashboard() {
         </div>
         <div className={activeTab === "info" ? "" : "hidden"}>
           <Card bare title="About this demo" icon={Info}>
-            <div className="flex flex-col gap-3 text-sm text-neutral-300">
+            <div className="flex flex-col gap-3 text-sm text-ink-dim">
               <p className="leading-relaxed">
                 BarangAI outputs are decision-support estimates from simplified models, intended
                 for scenario comparison — not engineering-grade predictions.
               </p>
               <div>
-                <div className="mb-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
+                <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">
                   Data sources
                 </div>
-                <ul className="list-inside list-disc space-y-0.5 text-neutral-400">
+                <ul className="list-inside list-disc space-y-0.5 text-ink-dim">
                   {twin.profile.dataSources.map((s) => (
                     <li key={s}>{s}</li>
                   ))}
@@ -232,7 +237,7 @@ export default function Dashboard() {
 
       {/* Dock rail — always visible; toggles which panel slides in. */}
       <div
-        className="pointer-events-auto fixed z-30 flex gap-1.5 rounded-2xl border border-white/10 bg-neutral-900/70 p-1.5 shadow-lg shadow-black/30 backdrop-blur-xl
+        className="pointer-events-auto fixed z-30 flex gap-1.5 rounded-2xl border border-line bg-white/80 p-1.5 shadow-[0_4px_14px_rgba(17,24,39,0.08)] backdrop-blur-xl
           bottom-4 left-1/2 -translate-x-1/2 flex-row
           sm:bottom-auto sm:left-auto sm:right-4 sm:top-1/2 sm:translate-x-0 sm:-translate-y-1/2 sm:flex-col"
       >

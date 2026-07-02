@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
-:root {
-  --background: #0a0a0a;
-  --foreground: #f5f5f5;
+/* Design tokens — light civic green theme (from design reference). */
+@theme {
+  --color-page: #f0faf4;
+  --color-surface: #ffffff;
+  --color-surface-alt: #eaf7ef;
+  --color-line: #dcede2;
+  --color-ink: #0b2318;
+  --color-ink-dim: #5c7568;
+  --color-ink-faint: #93aa9c;
+  --color-brand: #15803d;
+  --color-brand-dark: #0f3d2e;
+  --color-brand-2: #22c55e;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 html,
@@ -12,18 +22,31 @@ body {
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom scrollbar for the dark theme (dock panel content etc.) */
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+/* Custom scrollbar for the light theme (dock panel content etc.) */
 * {
-  scrollbar-color: #52525b transparent;
+  scrollbar-color: #cfe0d4 transparent;
   scrollbar-width: thin;
 }
 ::-webkit-scrollbar {
@@ -34,23 +57,23 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #52525b;
+  background-color: #cfe0d4;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #71717a;
+  background-color: #b3ccbb;
 }
 
-/* Leaflet dark-theme overrides — the library ships light-mode controls/popups by default. */
+/* Leaflet light-theme overrides — align library controls/popups with the app shell. */
 .leaflet-container {
-  background: #0b0d12;
+  background: #eaf3ec;
   font-family: inherit;
 }
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: #171922 !important;
-  color: #e5e7eb !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  background: #ffffff !important;
+  color: #0b2318 !important;
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.15);
 }
 .leaflet-popup-content-wrapper {
   border-radius: 12px;
@@ -60,20 +83,20 @@ body {
   font-size: 13px;
 }
 .leaflet-popup-close-button {
-  color: #9ca3af !important;
+  color: #5c7568 !important;
 }
 .leaflet-control-zoom a {
-  background: #171922 !important;
-  color: #e5e7eb !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: #ffffff !important;
+  color: #0b2318 !important;
+  border-color: #dcede2 !important;
 }
 .leaflet-control-zoom a:hover {
-  background: #23252f !important;
+  background: #eaf7ef !important;
 }
 .leaflet-control-attribution {
-  background: rgba(23, 25, 34, 0.7) !important;
-  color: #9ca3af !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+  color: #5c7568 !important;
 }
 .leaflet-control-attribution a {
-  color: #9ca3af !important;
+  color: #15803d !important;
 }
