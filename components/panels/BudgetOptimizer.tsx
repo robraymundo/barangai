@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Wallet } from "lucide-react";
 import type { ProjectCandidate } from "@/types";
 import { api, type BudgetResponse } from "@/lib/client/api";
-import { Card, Badge, Spinner } from "@/components/ui";
+import { Badge, Spinner } from "@/components/ui";
 
 /** Seeded, Alibagu-relevant candidate projects for a one-click demo. */
 const DEFAULT_PROJECTS: ProjectCandidate[] = [
@@ -39,8 +38,7 @@ export default function BudgetOptimizer() {
   }
 
   return (
-    <Card bare title="AI Budget Optimization" subtitle="Rank projects for the greatest community value" icon={Wallet}>
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <label className="flex-1 text-sm">
             <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-dim">
@@ -107,9 +105,8 @@ export default function BudgetOptimizer() {
                 </li>
               ))}
             </ul>
-          </div>
-        )}
-      </div>
-    </Card>
+        </div>
+      )}
+    </div>
   );
 }

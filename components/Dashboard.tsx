@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   api,
   type ResilienceResponse,
@@ -15,25 +15,29 @@ import {
   Wallet,
   Info,
   Landmark,
+  LayoutDashboard,
   Menu,
   X,
   Map as MapIcon,
   Building2,
   type LucideIcon,
 } from "lucide-react";
-import { Spinner, Badge, Card } from "@/components/ui";
+import { Spinner, Badge } from "@/components/ui";
 import CommunityMap from "@/components/map/CommunityMap";
 import ScenarioSimulator from "@/components/panels/ScenarioSimulator";
 import ResiliencePanel, { type TimelinePoint } from "@/components/panels/ResiliencePanel";
 import VulnerabilityPanel from "@/components/panels/VulnerabilityPanel";
 import BudgetOptimizer from "@/components/panels/BudgetOptimizer";
 
-type TabKey = "simulate" | "resilience" | "vulnerability" | "budget" | "info";
+type ViewKey = "dashboard" | "simulate" | "resilience" | "vulnerability" | "budget" | "info";
 
-const NAV_GROUPS: Array<{ label: string; items: Array<{ key: TabKey; label: string; icon: LucideIcon }> }> = [
+const NAV_GROUPS: Array<{ label: string; items: Array<{ key: ViewKey; label: string; icon: LucideIcon }> }> = [
   {
     label: "Overview",
-    items: [{ key: "resilience", label: "Resilience", icon: ShieldCheck }],
+    items: [
+      { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { key: "resilience", label: "Resilience", icon: ShieldCheck },
+    ],
   },
   {
     label: "AI Intelligence",
@@ -76,14 +80,32 @@ function NavItem({
   );
 }
 
+function ViewHead({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div>
+      <h1 className="text-2xl font-extrabold sm:text-[26px]">{title}</h1>
+      <p className="mt-1 text-sm text-ink-dim">{subtitle}</p>
+    </div>
+  );
+}
+
+function PanelCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <section className={`rounded-[20px] border border-line bg-surface p-5 shadow-[0_2px_8px_rgba(17,24,39,0.05)] ${className}`}>
+      {children}
+    </section>
+  );
+}
+
 export default function Dashboard() {
   const [twin, setTwin] = useState<TwinResponse | null>(null);
   const [resilience, setResilience] = useState<ResilienceResponse | null>(null);
   const [vuln, setVuln] = useState<VulnerabilityResponse | null>(null);
   const [sims, setSims] = useState<SimulateResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<TabKey>("simulate");
+  const [activeView, setActiveView] = useState<ViewKey>("dashboard");
   const [mobileNav, setMobileNav] = useState(false);
+  const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     Promise.all([api.twin(), api.resilience(), api.vulnerability()])
@@ -129,9 +151,10 @@ export default function Dashboard() {
     );
   }
 
-  const select = (key: TabKey) => {
-    setActiveTab(key);
+  const select = (key: ViewKey) => {
+    setActiveView(key);
     setMobileNav(false);
+    mainRef.current?.scrollTo({ top: 0 });
   };
 
   const kpis: Array<{ icon: LucideIcon; chip: string; value: string; label: string; bar?: number }> = [
@@ -141,6 +164,20 @@ export default function Dashboard() {
     { icon: Users, chip: "bg-[#EF4444]", value: vuln.ranked[0]?.name ?? "—", label: "Most vulnerable zone" },
     { icon: FlaskConical, chip: "bg-[#8B5CF6]", value: String(sims.length), label: "Simulations run" },
   ];
+
+  const mapLegend = (
+    <div className="absolute bottom-3 left-3 z-500 rounded-xl border border-line bg-white/85 px-3 py-2 backdrop-blur">
+      <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-ink-dim">Vulnerability</div>
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-medium text-ink-dim">Low</span>
+        <div
+          className="h-1.5 w-24 rounded-full"
+          style={{ background: "linear-gradient(to right, #16a34a, #f59e0b, #ef4444)" }}
+        />
+        <span className="text-[10px] font-medium text-ink-dim">High</span>
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex h-dvh w-full overflow-hidden bg-page text-ink">
@@ -191,7 +228,7 @@ export default function Dashboard() {
                 {group.items.map((item) => (
                   <NavItem
                     key={item.key}
-                    active={activeTab === item.key}
+                    active={activeView === item.key}
                     icon={item.icon}
                     label={item.label}
                     onClick={() => select(item.key)}
@@ -244,147 +281,169 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Scrolling content */}
-        <main className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-          <div className="mx-auto flex max-w-[1600px] flex-col gap-5">
-            {/* View head */}
-            <div>
-              <h1 className="text-2xl font-extrabold sm:text-[26px]">{twin.profile.name}</h1>
-              <p className="mt-1 text-sm text-ink-dim">
-                Real-time digital twin overview · {twin.profile.city}
-              </p>
-            </div>
-
-            {/* Hero banner */}
-            <div className="relative overflow-hidden rounded-[28px] bg-linear-to-br from-brand-dark to-brand p-8 text-white shadow-[0_20px_40px_-12px_rgba(17,24,39,0.3)] sm:p-10">
-              <div
-                className="pointer-events-none absolute inset-0"
-                style={{ background: "radial-gradient(circle at 85% 20%, rgba(255,255,255,0.12), transparent 55%)" }}
-                aria-hidden
+        {/* Scrolling content — every view stays mounted (hidden) so typed input and
+            computed results survive navigation; maps mount only while visible. */}
+        <main ref={mainRef} className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+          <div className="mx-auto max-w-[1600px]">
+            {/* ---------- DASHBOARD ---------- */}
+            <div className={activeView === "dashboard" ? "flex flex-col gap-5" : "hidden"}>
+              <ViewHead
+                title={twin.profile.name}
+                subtitle={`Real-time digital twin overview · ${twin.profile.city}`}
               />
-              <Landmark
-                size={190}
-                strokeWidth={1.5}
-                className="pointer-events-none absolute -right-4 top-1/2 hidden -translate-y-1/2 text-white/10 lg:block"
-                aria-hidden
-              />
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3.5 py-1.5 text-[11px] font-bold tracking-wide">
-                AI Digital Twin
-              </span>
-              <h2 className="mt-4 max-w-lg text-[26px] font-extrabold leading-tight sm:text-3xl">
-                Smarter decisions for {twin.profile.name}
-              </h2>
-              <p className="mt-3 max-w-md text-sm leading-relaxed text-white/80">
-                Simulate projects and policies on the digital twin before spending public funds — from
-                flood mitigation to budget allocation.
-              </p>
-              <button
-                onClick={() => select("simulate")}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-brand-dark shadow-md transition hover:-translate-y-px hover:shadow-lg"
-              >
-                <FlaskConical size={16} strokeWidth={2.25} aria-hidden />
-                Run a Simulation
-              </button>
-              <span className="absolute bottom-8 right-8 hidden items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-2 text-xs font-bold backdrop-blur md:inline-flex">
-                <ShieldCheck size={14} aria-hidden />
-                Resilience {Math.round(currentScore)}/100
-              </span>
-            </div>
 
-            {/* KPI cards — all values come from live app data */}
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {kpis.map((k) => (
+              <div className="relative overflow-hidden rounded-[28px] bg-linear-to-br from-brand-dark to-brand p-8 text-white shadow-[0_20px_40px_-12px_rgba(17,24,39,0.3)] sm:p-10">
                 <div
-                  key={k.label}
-                  className="rounded-[20px] border border-line bg-surface p-4 shadow-[0_2px_8px_rgba(17,24,39,0.05)]"
+                  className="pointer-events-none absolute inset-0"
+                  style={{ background: "radial-gradient(circle at 85% 20%, rgba(255,255,255,0.12), transparent 55%)" }}
+                  aria-hidden
+                />
+                <Landmark
+                  size={190}
+                  strokeWidth={1.5}
+                  className="pointer-events-none absolute -right-4 top-1/2 hidden -translate-y-1/2 text-white/10 lg:block"
+                  aria-hidden
+                />
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3.5 py-1.5 text-[11px] font-bold tracking-wide">
+                  AI Digital Twin
+                </span>
+                <h2 className="mt-4 max-w-lg text-[26px] font-extrabold leading-tight sm:text-3xl">
+                  Smarter decisions for {twin.profile.name}
+                </h2>
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-white/80">
+                  Simulate projects and policies on the digital twin before spending public funds — from
+                  flood mitigation to budget allocation.
+                </p>
+                <button
+                  onClick={() => select("simulate")}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-brand-dark shadow-md transition hover:-translate-y-px hover:shadow-lg"
                 >
-                  <span
-                    className={`flex h-9 w-9 items-center justify-center rounded-xl text-white ${k.chip}`}
-                    aria-hidden
-                  >
-                    <k.icon size={16} strokeWidth={2.25} />
-                  </span>
-                  <div className="mt-3 truncate text-xl font-extrabold tabular-nums" title={k.value}>
-                    {k.value}
-                  </div>
-                  <div className="mt-0.5 text-xs font-semibold text-ink-dim">{k.label}</div>
-                  {k.bar != null && (
-                    <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-surface-alt">
-                      <div
-                        className="h-full rounded-full bg-linear-to-r from-brand to-brand-2 transition-all duration-700"
-                        style={{ width: `${Math.max(0, Math.min(100, k.bar))}%` }}
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+                  <FlaskConical size={16} strokeWidth={2.25} aria-hidden />
+                  Run a Simulation
+                </button>
+                <span className="absolute bottom-8 right-8 hidden items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-2 text-xs font-bold backdrop-blur md:inline-flex">
+                  <ShieldCheck size={14} aria-hidden />
+                  Resilience {Math.round(currentScore)}/100
+                </span>
+              </div>
 
-            {/* Map + active feature panel */}
-            <div className="grid items-start gap-4 lg:grid-cols-[3fr_2fr]">
-              <section className="rounded-[20px] border border-line bg-surface p-4 shadow-[0_2px_8px_rgba(17,24,39,0.05)]">
+              {/* KPI cards — all values come from live app data */}
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                {kpis.map((k) => (
+                  <div
+                    key={k.label}
+                    className="rounded-[20px] border border-line bg-surface p-4 shadow-[0_2px_8px_rgba(17,24,39,0.05)]"
+                  >
+                    <span
+                      className={`flex h-9 w-9 items-center justify-center rounded-xl text-white ${k.chip}`}
+                      aria-hidden
+                    >
+                      <k.icon size={16} strokeWidth={2.25} />
+                    </span>
+                    <div className="mt-3 truncate text-xl font-extrabold tabular-nums" title={k.value}>
+                      {k.value}
+                    </div>
+                    <div className="mt-0.5 text-xs font-semibold text-ink-dim">{k.label}</div>
+                    {k.bar != null && (
+                      <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-surface-alt">
+                        <div
+                          className="h-full rounded-full bg-linear-to-r from-brand to-brand-2 transition-all duration-700"
+                          style={{ width: `${Math.max(0, Math.min(100, k.bar))}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <PanelCard className="p-4">
                 <h3 className="flex items-center gap-2 px-1 text-sm font-bold">
                   <MapIcon size={15} strokeWidth={2.25} className="text-brand" aria-hidden />
                   Community Map
                 </h3>
-                <div className="relative mt-3 h-105 overflow-hidden rounded-2xl border border-line">
+                <div className="relative mt-3 h-120 overflow-hidden rounded-2xl border border-line">
                   <CommunityMap
                     profile={twin.profile}
                     geojson={twin.geojson}
                     vulnerabilityByZone={vulnerabilityByZone}
                   />
-                  <div className="absolute bottom-3 left-3 z-500 rounded-xl border border-line bg-white/85 px-3 py-2 backdrop-blur">
-                    <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-ink-dim">
-                      Vulnerability
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-medium text-ink-dim">Low</span>
-                      <div
-                        className="h-1.5 w-24 rounded-full"
-                        style={{ background: "linear-gradient(to right, #16a34a, #f59e0b, #ef4444)" }}
+                  {mapLegend}
+                </div>
+              </PanelCard>
+            </div>
+
+            {/* ---------- SCENARIO SIMULATOR ---------- */}
+            <div className={activeView === "simulate" ? "flex flex-col gap-5" : "hidden"}>
+              <ViewHead title="AI Scenario Simulator" subtitle="Ask a what-if question about a project or policy" />
+              <PanelCard>
+                <ScenarioSimulator onSimulated={(res) => setSims((prev) => [...prev, res])} />
+              </PanelCard>
+            </div>
+
+            {/* ---------- RESILIENCE ---------- */}
+            <div className={activeView === "resilience" ? "flex flex-col gap-5" : "hidden"}>
+              <ViewHead title="Community Resilience Score" subtitle="Updates after every simulation" />
+              <PanelCard>
+                <ResiliencePanel score={currentScore} components={resilience.components} timeline={timeline} />
+              </PanelCard>
+            </div>
+
+            {/* ---------- VULNERABILITY ---------- */}
+            <div className={activeView === "vulnerability" ? "flex flex-col gap-5" : "hidden"}>
+              <ViewHead title="Community Vulnerability Intelligence" subtitle="Who is most at risk, not just where" />
+              <div className="grid items-start gap-4 lg:grid-cols-[3fr_2fr]">
+                <PanelCard className="p-4">
+                  <h3 className="flex items-center gap-2 px-1 text-sm font-bold">
+                    <MapIcon size={15} strokeWidth={2.25} className="text-brand" aria-hidden />
+                    Vulnerability Map
+                  </h3>
+                  <div className="relative mt-3 h-105 overflow-hidden rounded-2xl border border-line">
+                    {/* Mounted only while visible so the map initializes at the right size. */}
+                    {activeView === "vulnerability" && (
+                      <CommunityMap
+                        profile={twin.profile}
+                        geojson={twin.geojson}
+                        vulnerabilityByZone={vulnerabilityByZone}
                       />
-                      <span className="text-[10px] font-medium text-ink-dim">High</span>
+                    )}
+                    {mapLegend}
+                  </div>
+                </PanelCard>
+                <PanelCard>
+                  <VulnerabilityPanel ranked={vuln.ranked} summary={vuln.summary} recommendations={vuln.recommendations} />
+                </PanelCard>
+              </div>
+            </div>
+
+            {/* ---------- BUDGET ---------- */}
+            <div className={activeView === "budget" ? "flex flex-col gap-5" : "hidden"}>
+              <ViewHead title="AI Budget Optimization" subtitle="Rank projects for the greatest community value" />
+              <PanelCard>
+                <BudgetOptimizer />
+              </PanelCard>
+            </div>
+
+            {/* ---------- ABOUT ---------- */}
+            <div className={activeView === "info" ? "flex flex-col gap-5" : "hidden"}>
+              <ViewHead title="About this demo" subtitle="Methodology & data sources" />
+              <PanelCard className="max-w-3xl">
+                <div className="flex flex-col gap-3 text-sm text-ink-dim">
+                  <p className="leading-relaxed">
+                    BarangAI outputs are decision-support estimates from simplified models, intended
+                    for scenario comparison — not engineering-grade predictions.
+                  </p>
+                  <div>
+                    <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">
+                      Data sources
                     </div>
+                    <ul className="list-inside list-disc space-y-0.5 text-ink-dim">
+                      {twin.profile.dataSources.map((s) => (
+                        <li key={s}>{s}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-              </section>
-
-              {/* Every feature stays mounted; only the active one is visible, so switching
-                  never resets typed input or computed results. */}
-              <section className="rounded-[20px] border border-line bg-surface p-5 shadow-[0_2px_8px_rgba(17,24,39,0.05)]">
-                <div className={activeTab === "simulate" ? "" : "hidden"}>
-                  <ScenarioSimulator onSimulated={(res) => setSims((prev) => [...prev, res])} />
-                </div>
-                <div className={activeTab === "resilience" ? "" : "hidden"}>
-                  <ResiliencePanel score={currentScore} components={resilience.components} timeline={timeline} />
-                </div>
-                <div className={activeTab === "vulnerability" ? "" : "hidden"}>
-                  <VulnerabilityPanel ranked={vuln.ranked} summary={vuln.summary} recommendations={vuln.recommendations} />
-                </div>
-                <div className={activeTab === "budget" ? "" : "hidden"}>
-                  <BudgetOptimizer />
-                </div>
-                <div className={activeTab === "info" ? "" : "hidden"}>
-                  <Card bare title="About this demo" icon={Info}>
-                    <div className="flex flex-col gap-3 text-sm text-ink-dim">
-                      <p className="leading-relaxed">
-                        BarangAI outputs are decision-support estimates from simplified models, intended
-                        for scenario comparison — not engineering-grade predictions.
-                      </p>
-                      <div>
-                        <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">
-                          Data sources
-                        </div>
-                        <ul className="list-inside list-disc space-y-0.5 text-ink-dim">
-                          {twin.profile.dataSources.map((s) => (
-                            <li key={s}>{s}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-              </section>
+              </PanelCard>
             </div>
           </div>
         </main>

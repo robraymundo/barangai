@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { FlaskConical } from "lucide-react";
 import { api, type SimulateResponse } from "@/lib/client/api";
-import { Card, Badge, Spinner } from "@/components/ui";
+import { Badge, Spinner } from "@/components/ui";
 
 const EXAMPLES = [
   "What if we build a new evacuation center here?",
@@ -68,8 +67,7 @@ export default function ScenarioSimulator({
   const delta = res?.result.deltas.resilience ?? 0;
 
   return (
-    <Card bare title="AI Scenario Simulator" subtitle="Ask a what-if question about a project or policy" icon={FlaskConical}>
-      <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
             value={question}
@@ -121,9 +119,8 @@ export default function ScenarioSimulator({
             <p className="text-xs text-ink-faint">
               Decision-support estimate from a simplified model — not an engineering prediction.
             </p>
-          </div>
-        )}
-      </div>
-    </Card>
+        </div>
+      )}
+    </div>
   );
 }
