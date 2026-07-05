@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { Wallet } from "lucide-react";
 import type { ProjectCandidate } from "@/types";
 import { api, type BudgetResponse } from "@/lib/client/api";
-import { Badge, Spinner } from "@/components/ui";
+import { Alert, Badge, Button, EmptyState, Spinner } from "@/components/ui";
 
 /** Seeded, Alibagu-relevant candidate projects for a one-click demo. */
 const DEFAULT_PROJECTS: ProjectCandidate[] = [
@@ -53,13 +54,9 @@ export default function BudgetOptimizer() {
               className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm tabular-nums text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-[#DCFCE7]"
             />
           </label>
-          <button
-            onClick={run}
-            disabled={loading || budget <= 0}
-            className="rounded-full bg-linear-to-br from-brand to-brand-2 px-5 py-2 text-sm font-bold text-white shadow-md shadow-brand/25 transition hover:-translate-y-px hover:shadow-lg hover:shadow-brand/30 disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0"
-          >
+          <Button onClick={run} disabled={loading || budget <= 0}>
             {loading ? "Optimizing…" : "Optimize"}
-          </button>
+          </Button>
         </div>
 
         <p className="text-xs text-ink-faint">
@@ -67,7 +64,15 @@ export default function BudgetOptimizer() {
         </p>
 
         {loading && <Spinner />}
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <Alert>{error}</Alert>}
+
+        {!data && !loading && !error && (
+          <EmptyState
+            icon={Wallet}
+            title="No optimization yet"
+            hint="Set your available budget and press Optimize — the knapsack solver will pick the project mix with the greatest community value."
+          />
+        )}
 
         {data && !loading && (
           <div className="flex flex-col gap-3">

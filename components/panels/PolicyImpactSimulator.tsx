@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Route, ShieldCheck, Wind, Users, Siren, Store, Smile, MapPin } from "lucide-react";
+import { Route, ShieldCheck, Wind, Users, Siren, Store, Smile, MapPin, MessagesSquare } from "lucide-react";
 import type { SimulateResponse } from "@/lib/client/api";
 import { api } from "@/lib/client/api";
-import { Badge, Card, Spinner } from "@/components/ui";
+import { Alert, Badge, Button, Card, EmptyState, Spinner } from "@/components/ui";
 import { POLICY_TEMPLATES, type PolicySimulationResult } from "@/lib/scoring/policy";
 
 function fmt(n: number): string {
@@ -88,13 +88,9 @@ export default function PolicyImpactSimulator({
               className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink placeholder-ink-faint outline-none transition focus:border-brand focus:ring-4 focus:ring-[#DCFCE7]"
               aria-label="Policy question"
             />
-            <button
-              onClick={() => run(question)}
-              disabled={loading || !question.trim()}
-              className="rounded-full bg-linear-to-br from-brand to-brand-2 px-5 py-2 text-sm font-bold text-white shadow-md shadow-brand/25 transition hover:-translate-y-px hover:shadow-lg hover:shadow-brand/30 disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0"
-            >
+            <Button onClick={() => run(question)} disabled={loading || !question.trim()}>
               {loading ? "Simulating…" : "Simulate"}
-            </button>
+            </Button>
           </div>
           <div className="flex flex-wrap gap-1.5">
             {POLICY_TEMPLATES.map((t) => (
@@ -109,9 +105,17 @@ export default function PolicyImpactSimulator({
             ))}
           </div>
           {loading && <Spinner label="Running deterministic model + AI explanation…" />}
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <Alert>{error}</Alert>}
         </div>
       </Card>
+
+      {runs.length === 0 && !loading && !error && (
+        <EmptyState
+          icon={MessagesSquare}
+          title="No policy simulations yet"
+          hint="Ask a question above or pick a template — run several to unlock a side-by-side scenario comparison."
+        />
+      )}
 
       {latest && !loading && (
         <Card title={latest.result.typeLabel} subtitle={`Applied to ${latest.result.zoneName}`}>
@@ -168,16 +172,16 @@ export default function PolicyImpactSimulator({
               </thead>
               <tbody>
                 {runs.map((r) => (
-                  <tr key={r.id} className="border-b border-line last:border-0">
-                    <td className="py-2 pr-3 font-semibold text-ink">{r.result.typeLabel}</td>
-                    <td className="py-2 pr-3 tabular-nums">
+                  <tr key={r.id} className="border-b border-line transition-colors last:border-0 hover:bg-surface-alt/50">
+                    <td className="py-2.5 pr-3 font-semibold text-ink">{r.result.typeLabel}</td>
+                    <td className="py-2.5 pr-3 tabular-nums">
                       <Badge tone={r.result.resilienceDelta >= 0 ? "green" : "red"}>
                         {r.result.resilienceDelta >= 0 ? "+" : ""}
                         {fmt(r.result.resilienceDelta)}
                       </Badge>
                     </td>
                     {METRIC_DEFS.map((m) => (
-                      <td key={m.key} className="py-2 pr-3 tabular-nums text-ink-dim">
+                      <td key={m.key} className="py-2.5 pr-3 tabular-nums text-ink-dim">
                         {m.key === "estimatedBeneficiaries" ? fmt(r.result.metrics[m.key]) : signed(r.result.metrics[m.key], m.suffix)}
                       </td>
                     ))}

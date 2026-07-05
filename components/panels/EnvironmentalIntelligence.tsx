@@ -5,7 +5,7 @@ import { Droplets, Thermometer, Waves, Trees, Trash2, MapIcon, Sparkles } from "
 import type { BarangayProfile } from "@/types";
 import type { ZoneFeatureCollection, SimulateResponse } from "@/lib/client/api";
 import { api } from "@/lib/client/api";
-import { Badge, Card, ScoreDial, Spinner, Stat } from "@/components/ui";
+import { Alert, Badge, Button, Card, ScoreDial, Spinner, Stat } from "@/components/ui";
 import EnvLayerMap from "@/components/map/EnvLayerMap";
 import { ENV_INTERVENTION_LIST, type EnvLayerKey, type EnvSimulationResult, type EnvIntervention, type ZoneEnvLayers } from "@/lib/scoring/environment";
 
@@ -174,7 +174,7 @@ export default function EnvironmentalIntelligence({
                   onClick={() => toggleIntervention(i.key)}
                   className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
                     selected.has(i.key)
-                      ? "bg-brand-dark text-white"
+                      ? "bg-brand text-white shadow-sm"
                       : "border border-line bg-surface text-ink-dim hover:bg-surface-alt hover:text-ink"
                   }`}
                 >
@@ -184,15 +184,11 @@ export default function EnvironmentalIntelligence({
             </div>
           </div>
 
-          <button
-            onClick={runSimulation}
-            disabled={loading || selected.size === 0}
-            className="w-full rounded-full bg-linear-to-br from-brand to-brand-2 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-brand/25 transition hover:-translate-y-px hover:shadow-lg hover:shadow-brand/30 disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0"
-          >
+          <Button onClick={runSimulation} disabled={loading || selected.size === 0} className="w-full">
             {loading ? "Simulating…" : "Run Environmental Simulation"}
-          </button>
+          </Button>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <Alert>{error}</Alert>}
 
           {result && !loading && (
             <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface-alt/60 p-4">

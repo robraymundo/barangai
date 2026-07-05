@@ -1,7 +1,7 @@
-/** Small, dependency-free presentational primitives shared across the dashboard. */
+/** Small presentational primitives shared across the dashboard. */
 
-import type { ReactNode } from "react";
-import type { LucideIcon } from "lucide-react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { AlertCircle, type LucideIcon } from "lucide-react";
 
 export function Card({
   title,
@@ -42,13 +42,62 @@ export function Card({
   }
 
   return (
-    <section
-      className={`rounded-[20px] border border-line bg-surface shadow-[0_4px_14px_rgba(17,24,39,0.06),0_2px_6px_rgba(17,24,39,0.05)] ${className}`}
-    >
+    <section className={`rounded-[20px] border border-line bg-surface shadow-card ${className}`}>
       {header}
       <div className="p-5">{children}</div>
     </section>
   );
+}
+
+/** Standard button. `primary` for the one main action per view, `ghost` for the rest. */
+export function Button({
+  variant = "primary",
+  className = "",
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "ghost" }) {
+  const variants = {
+    primary:
+      "bg-linear-to-br from-brand to-brand-2 text-white shadow-md shadow-brand/25 hover:-translate-y-px hover:shadow-lg hover:shadow-brand/30 active:translate-y-0 active:scale-[0.98]",
+    ghost: "border border-line bg-surface text-ink hover:bg-surface-alt",
+  };
+  return (
+    <button
+      className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0 ${variants[variant]} ${className}`}
+      {...props}
+    />
+  );
+}
+
+/** Inline alert for error/info feedback, consistent across all panels. */
+export function Alert({ tone = "error", children }: { tone?: "error" | "info"; children: ReactNode }) {
+  const tones = {
+    error: "border-red-200 bg-red-50 text-red-700",
+    info: "border-line bg-surface-alt text-ink-dim",
+  };
+  return (
+    <div role={tone === "error" ? "alert" : "status"} className={`flex items-start gap-2.5 rounded-xl border px-3.5 py-2.5 text-sm leading-relaxed ${tones[tone]}`}>
+      <AlertCircle size={16} strokeWidth={2.25} className="mt-0.5 shrink-0" aria-hidden />
+      <div>{children}</div>
+    </div>
+  );
+}
+
+/** Friendly placeholder for pages/sections with no results yet. */
+export function EmptyState({ icon: Icon, title, hint }: { icon: LucideIcon; title: string; hint?: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-2.5 rounded-2xl border border-dashed border-line bg-surface-alt/40 px-6 py-12 text-center">
+      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-alt text-brand" aria-hidden>
+        <Icon size={20} strokeWidth={2} />
+      </span>
+      <div className="text-sm font-bold text-ink">{title}</div>
+      {hint && <p className="max-w-sm text-xs leading-relaxed text-ink-dim">{hint}</p>}
+    </div>
+  );
+}
+
+/** Pulsing placeholder block for skeleton loading screens. */
+export function Skeleton({ className = "" }: { className?: string }) {
+  return <div className={`animate-pulse rounded-xl bg-surface-alt ${className}`} aria-hidden />;
 }
 
 export function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {

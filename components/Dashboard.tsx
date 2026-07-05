@@ -23,7 +23,7 @@ import {
   MessagesSquare,
   type LucideIcon,
 } from "lucide-react";
-import { Spinner, Badge } from "@/components/ui";
+import { Badge, Alert, Button, Skeleton } from "@/components/ui";
 import { BrandLogo, BrandGlyph } from "@/components/BrandLogo";
 import CommunityMap from "@/components/map/CommunityMap";
 import ScenarioSimulator from "@/components/panels/ScenarioSimulator";
@@ -105,7 +105,7 @@ function ViewHead({ title, subtitle }: { title: string; subtitle: string }) {
 
 function PanelCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <section className={`rounded-[20px] border border-line bg-surface p-5 shadow-[0_2px_8px_rgba(17,24,39,0.05)] ${className}`}>
+    <section className={`rounded-[20px] border border-line bg-surface p-5 shadow-card ${className}`}>
       {children}
     </section>
   );
@@ -150,17 +150,56 @@ export default function Dashboard() {
   if (error) {
     return (
       <div className="flex h-dvh w-full items-center justify-center bg-page p-8">
-        <div className="max-w-md rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {error}
+        <div className="flex w-full max-w-md flex-col gap-4">
+          <Alert tone="error">
+            <strong className="mb-0.5 block">Couldn&apos;t load community data</strong>
+            {error}
+          </Alert>
+          <Button variant="ghost" className="self-start" onClick={() => window.location.reload()}>
+            Try again
+          </Button>
         </div>
       </div>
     );
   }
 
   if (!twin || !resilience || !vuln) {
+    // Skeleton mirrors the real shell so the page doesn't shift when data lands.
     return (
-      <div className="flex h-dvh w-full items-center justify-center bg-page">
-        <Spinner label="Loading BarangAI digital twin…" />
+      <div className="flex h-dvh w-full overflow-hidden bg-page" aria-busy="true">
+        <span className="sr-only">Loading BarangAI digital twin…</span>
+        <div className="hidden w-64 shrink-0 flex-col border-r border-line bg-surface md:flex">
+          <div className="flex items-center gap-3 border-b border-line px-5 py-5">
+            <Skeleton className="h-10 w-10" />
+            <div className="flex flex-col gap-1.5">
+              <Skeleton className="h-3.5 w-24" />
+              <Skeleton className="h-2.5 w-32" />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 p-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
+          </div>
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className="flex h-16 shrink-0 items-center border-b border-line px-4 sm:px-6">
+            <Skeleton className="hidden h-4 w-56 sm:block" />
+            <Skeleton className="ml-auto h-10 w-44 rounded-2xl" />
+          </div>
+          <div className="flex-1 overflow-hidden px-4 py-6 sm:px-6">
+            <div className="mx-auto flex max-w-[1600px] flex-col gap-5">
+              <Skeleton className="h-8 w-64" />
+              <Skeleton className="h-56 w-full rounded-[28px]" />
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Skeleton key={i} className="h-28 rounded-[20px]" />
+                ))}
+              </div>
+              <Skeleton className="h-105 w-full rounded-[20px]" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -280,7 +319,7 @@ export default function Dashboard() {
           <div className="hidden text-sm font-medium text-ink-dim sm:block">
             Digital twin · {twin.profile.name}, {twin.profile.city}
           </div>
-          <div className="ml-auto flex items-center gap-2 rounded-2xl border border-line bg-surface px-4 py-2 shadow-[0_2px_8px_rgba(17,24,39,0.05)]">
+          <div className="ml-auto flex items-center gap-2 rounded-2xl border border-line bg-surface px-4 py-2 shadow-card">
             <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-dim">Resilience</span>
             <span className="text-lg font-extrabold tabular-nums">{Math.round(currentScore)}</span>
             {sims.length > 0 && (
@@ -297,7 +336,7 @@ export default function Dashboard() {
         <main ref={mainRef} className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
           <div className="mx-auto max-w-[1600px]">
             {/* ---------- DASHBOARD ---------- */}
-            <div className={activeView === "dashboard" ? "flex flex-col gap-5" : "hidden"}>
+            <div className={activeView === "dashboard" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead
                 title={twin.profile.name}
                 subtitle={`Real-time digital twin overview · ${twin.profile.city}`}
@@ -341,7 +380,7 @@ export default function Dashboard() {
                 {kpis.map((k) => (
                   <div
                     key={k.label}
-                    className="rounded-[20px] border border-line bg-surface p-4 shadow-[0_2px_8px_rgba(17,24,39,0.05)]"
+                    className="rounded-[20px] border border-line bg-surface p-4 shadow-card transition-shadow hover:shadow-lift"
                   >
                     <span
                       className={`flex h-9 w-9 items-center justify-center rounded-xl text-white ${k.chip}`}
@@ -382,7 +421,7 @@ export default function Dashboard() {
             </div>
 
             {/* ---------- SCENARIO SIMULATOR ---------- */}
-            <div className={activeView === "simulate" ? "flex flex-col gap-5" : "hidden"}>
+            <div className={activeView === "simulate" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead title="AI Scenario Simulator" subtitle="Ask a what-if question about a project or policy" />
               <PanelCard>
                 <ScenarioSimulator onSimulated={(res) => setSims((prev) => [...prev, res])} />
@@ -390,7 +429,7 @@ export default function Dashboard() {
             </div>
 
             {/* ---------- RESILIENCE ---------- */}
-            <div className={activeView === "resilience" ? "flex flex-col gap-5" : "hidden"}>
+            <div className={activeView === "resilience" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead title="Community Resilience Score" subtitle="Updates after every simulation" />
               <PanelCard>
                 <ResiliencePanel score={currentScore} components={resilience.components} timeline={timeline} />
@@ -398,7 +437,7 @@ export default function Dashboard() {
             </div>
 
             {/* ---------- VULNERABILITY ---------- */}
-            <div className={activeView === "vulnerability" ? "flex flex-col gap-5" : "hidden"}>
+            <div className={activeView === "vulnerability" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead title="Community Vulnerability Intelligence" subtitle="Who is most at risk, not just where" />
               <div className="grid items-start gap-4 lg:grid-cols-[3fr_2fr]">
                 <PanelCard className="p-4">
@@ -425,7 +464,7 @@ export default function Dashboard() {
             </div>
 
             {/* ---------- BUDGET ---------- */}
-            <div className={activeView === "budget" ? "flex flex-col gap-5" : "hidden"}>
+            <div className={activeView === "budget" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead title="AI Budget Optimization" subtitle="Rank projects for the greatest community value" />
               <PanelCard>
                 <BudgetOptimizer />
@@ -433,7 +472,7 @@ export default function Dashboard() {
             </div>
 
             {/* ---------- CLIMATE & ENVIRONMENTAL INTELLIGENCE ---------- */}
-            <div className={activeView === "environment" ? "flex flex-col gap-5" : "hidden"}>
+            <div className={activeView === "environment" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead
                 title="Climate & Environmental Intelligence"
                 subtitle="Analyze environmental risk layers and simulate green interventions"
@@ -448,13 +487,13 @@ export default function Dashboard() {
             </div>
 
             {/* ---------- POLICY IMPACT SIMULATOR ---------- */}
-            <div className={activeView === "policy" ? "flex flex-col gap-5" : "hidden"}>
+            <div className={activeView === "policy" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead title="Policy Impact Simulator" subtitle="Simulate policies in natural language and compare outcomes" />
               <PolicyImpactSimulator onSimulated={(res) => setSims((prev) => [...prev, res])} />
             </div>
 
             {/* ---------- ABOUT ---------- */}
-            <div className={activeView === "info" ? "flex flex-col gap-5" : "hidden"}>
+            <div className={activeView === "info" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead title="About this demo" subtitle="Methodology & data sources" />
               <PanelCard>
                 <div className="grid gap-6 text-sm text-ink-dim md:grid-cols-2">

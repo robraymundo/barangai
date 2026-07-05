@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { FlaskConical } from "lucide-react";
 import { api, type SimulateResponse } from "@/lib/client/api";
-import { Badge, Spinner } from "@/components/ui";
+import { Alert, Badge, Button, EmptyState, Spinner } from "@/components/ui";
 
 const EXAMPLES = [
   "What if we build a new evacuation center here?",
@@ -77,13 +78,9 @@ export default function ScenarioSimulator({
             className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink placeholder-ink-faint outline-none transition focus:border-brand focus:ring-4 focus:ring-[#DCFCE7]"
             aria-label="Scenario question"
           />
-          <button
-            onClick={() => run(question)}
-            disabled={loading || !question.trim()}
-            className="rounded-full bg-linear-to-br from-brand to-brand-2 px-5 py-2 text-sm font-bold text-white shadow-md shadow-brand/25 transition hover:-translate-y-px hover:shadow-lg hover:shadow-brand/30 disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0"
-          >
+          <Button onClick={() => run(question)} disabled={loading || !question.trim()}>
             {loading ? "Simulating…" : "Simulate"}
-          </button>
+          </Button>
         </div>
 
         <div className="flex flex-wrap gap-1.5">
@@ -100,7 +97,15 @@ export default function ScenarioSimulator({
         </div>
 
         {loading && <Spinner label="Running deterministic model + AI explanation…" />}
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <Alert>{error}</Alert>}
+
+        {!res && !loading && !error && (
+          <EmptyState
+            icon={FlaskConical}
+            title="No simulation yet"
+            hint="Ask a what-if question above or tap an example to see its projected impact on the community."
+          />
+        )}
 
         {res && !loading && (
           <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface-alt/60 p-4">

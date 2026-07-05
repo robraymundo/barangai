@@ -8,11 +8,13 @@
   --color-line: #dcede2;
   --color-ink: #0b2318;
   --color-ink-dim: #5c7568;
-  --color-ink-faint: #93aa9c;
+  --color-ink-faint: #7c9488;
   --color-brand: #15803d;
   --color-brand-dark: #0f3d2e;
   --color-brand-2: #22c55e;
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --shadow-card: 0 2px 8px rgba(17, 24, 39, 0.05);
+  --shadow-lift: 0 8px 24px -8px rgba(17, 24, 39, 0.14);
 }
 
 html,
@@ -42,6 +44,35 @@ h4 {
 ::selection {
   background: var(--color-brand);
   color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* Views animate in when their display flips from none to block. */
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.view-in {
+  animation: view-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Custom scrollbar for the light theme (dock panel content etc.) */
