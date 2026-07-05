@@ -14,7 +14,6 @@ import {
   Users,
   Wallet,
   Info,
-  Landmark,
   LayoutDashboard,
   Menu,
   X,
@@ -25,6 +24,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Spinner, Badge } from "@/components/ui";
+import { BrandLogo, BrandGlyph } from "@/components/BrandLogo";
 import CommunityMap from "@/components/map/CommunityMap";
 import ScenarioSimulator from "@/components/panels/ScenarioSimulator";
 import ResiliencePanel, { type TimelinePoint } from "@/components/panels/ResiliencePanel";
@@ -211,11 +211,8 @@ export default function Dashboard() {
         }`}
       >
         <div className="flex items-center gap-3 border-b border-line px-5 py-5">
-          <span
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-brand to-emerald-400 text-white shadow-md shadow-brand/30"
-            aria-hidden
-          >
-            <Landmark size={19} strokeWidth={2} />
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl shadow-md shadow-brand/30" aria-hidden>
+            <BrandLogo className="h-10 w-10" />
           </span>
           <div>
             <div className="text-[15px] font-extrabold leading-none">
@@ -312,11 +309,9 @@ export default function Dashboard() {
                   style={{ background: "radial-gradient(circle at 85% 20%, rgba(255,255,255,0.12), transparent 55%)" }}
                   aria-hidden
                 />
-                <Landmark
+                <BrandGlyph
                   size={190}
-                  strokeWidth={1.5}
                   className="pointer-events-none absolute -right-4 top-1/2 hidden -translate-y-1/2 text-white/10 lg:block"
-                  aria-hidden
                 />
                 <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3.5 py-1.5 text-[11px] font-bold tracking-wide">
                   AI Digital Twin
