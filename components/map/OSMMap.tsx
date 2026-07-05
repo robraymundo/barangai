@@ -24,12 +24,17 @@ export default function OSMMap({ profile, geojson, vulnerabilityByZone }: Props)
 
   useEffect(() => {
     let map: LeafletMap | undefined;
+    let observer: ResizeObserver | undefined;
     let cancelled = false;
 
     (async () => {
       const L = (await import("leaflet")).default;
       if (cancelled || !ref.current || ref.current.dataset.init === "1") return;
       ref.current.dataset.init = "1";
+
+      // Keep tiles filling the container when its width changes (e.g. sidebar collapse).
+      observer = new ResizeObserver(() => map?.invalidateSize());
+      observer.observe(ref.current);
 
       map = L.map(ref.current, { zoomControl: false }).setView(
         [profile.centroid.lat, profile.centroid.lng],
@@ -99,6 +104,7 @@ export default function OSMMap({ profile, geojson, vulnerabilityByZone }: Props)
 
     return () => {
       cancelled = true;
+      observer?.disconnect();
       if (map) map.remove();
       if (ref.current) delete ref.current.dataset.init;
     };

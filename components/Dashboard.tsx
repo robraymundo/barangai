@@ -17,6 +17,8 @@ import {
   LayoutDashboard,
   Menu,
   X,
+  PanelLeftClose,
+  PanelLeftOpen,
   Map as MapIcon,
   Building2,
   Leaf,
@@ -71,25 +73,31 @@ function NavItem({
   active,
   icon: Icon,
   label,
+  collapsed,
   onClick,
 }: {
   active: boolean;
   icon: LucideIcon;
   label: string;
+  collapsed: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       onClick={onClick}
       aria-pressed={active}
+      aria-label={label}
+      title={collapsed ? label : undefined}
       className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm font-semibold transition ${
+        collapsed ? "md:justify-center md:px-0" : ""
+      } ${
         active
           ? "bg-linear-to-br from-brand to-brand-2 text-white shadow-lg shadow-brand/30"
           : "text-ink-dim hover:bg-surface-alt hover:text-ink"
       }`}
     >
       <Icon size={17} strokeWidth={2} aria-hidden className="shrink-0" />
-      {label}
+      <span className={`whitespace-nowrap ${collapsed ? "md:hidden" : ""}`}>{label}</span>
     </button>
   );
 }
@@ -119,7 +127,27 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<ViewKey>("dashboard");
   const [mobileNav, setMobileNav] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
+
+  // Restore the saved sidebar state after mount (SSR always renders expanded).
+  useEffect(() => {
+    if (localStorage.getItem("barangai:sidebar-collapsed") === "1") setCollapsed(true);
+  }, []);
+
+  const toggleCollapsed = () =>
+    setCollapsed((c) => {
+      localStorage.setItem("barangai:sidebar-collapsed", c ? "0" : "1");
+      return !c;
+    });
+
+  // Escape closes the mobile drawer.
+  useEffect(() => {
+    if (!mobileNav) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMobileNav(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [mobileNav]);
 
   useEffect(() => {
     Promise.all([api.twin(), api.resilience(), api.vulnerability()])
@@ -245,20 +273,41 @@ export default function Dashboard() {
 
       {/* ============ SIDEBAR ============ */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-line bg-surface transition-transform duration-200 ease-out md:static md:translate-x-0 ${
-          mobileNav ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-line bg-surface transition-[width,transform] duration-300 ease-out md:static md:translate-x-0 ${
+          collapsed ? "md:w-19" : "md:w-64"
+        } ${mobileNav ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex items-center gap-3 border-b border-line px-5 py-5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl shadow-md shadow-brand/30" aria-hidden>
+        <div
+          className={`flex items-center gap-3 overflow-hidden border-b border-line px-5 py-5 ${
+            collapsed ? "md:justify-center md:px-0" : ""
+          }`}
+        >
+          {/* Branding is fully hidden in collapsed mode — the rail leads with the toggle. */}
+          <span
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-md shadow-brand/30 ${
+              collapsed ? "md:hidden" : ""
+            }`}
+            aria-hidden
+          >
             <BrandLogo className="h-10 w-10" />
           </span>
-          <div>
-            <div className="text-[15px] font-extrabold leading-none">
+          <div className={collapsed ? "md:hidden" : ""}>
+            <div className="whitespace-nowrap text-[15px] font-extrabold leading-none">
               Barang<span className="text-brand">AI</span>
             </div>
-            <div className="mt-1 text-[11px] font-medium text-ink-dim">Decision Intelligence</div>
+            <div className="mt-1 whitespace-nowrap text-[11px] font-medium text-ink-dim">Decision Intelligence</div>
           </div>
+          <button
+            className={`hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl text-ink-dim transition hover:bg-surface-alt hover:text-ink md:flex ${
+              collapsed ? "" : "ml-auto"
+            }`}
+            onClick={toggleCollapsed}
+            aria-expanded={!collapsed}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {collapsed ? <PanelLeftOpen size={18} strokeWidth={2} /> : <PanelLeftClose size={18} strokeWidth={2} />}
+          </button>
           <button
             className="ml-auto rounded-lg p-1 text-ink-faint hover:bg-surface-alt hover:text-ink md:hidden"
             onClick={() => setMobileNav(false)}
@@ -268,12 +317,20 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Primary">
-          {NAV_GROUPS.map((group) => (
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4" aria-label="Primary">
+          {NAV_GROUPS.map((group, gi) => (
             <div key={group.label}>
-              <div className="px-3.5 pb-1.5 pt-4 text-[11px] font-bold uppercase tracking-wider text-ink-faint first:pt-0">
+              <div
+                className={`px-3.5 pb-1.5 pt-4 text-[11px] font-bold uppercase tracking-wider text-ink-faint first:pt-0 ${
+                  collapsed ? "md:hidden" : ""
+                }`}
+              >
                 {group.label}
               </div>
+              {/* Collapsed rail marks group boundaries with a thin divider instead of a label. */}
+              {gi > 0 && (
+                <div className={collapsed ? "mx-2 mb-3 mt-1 hidden h-px bg-line md:block" : "hidden"} aria-hidden />
+              )}
               <div className="flex flex-col gap-1">
                 {group.items.map((item) => (
                   <NavItem
@@ -281,6 +338,7 @@ export default function Dashboard() {
                     active={activeView === item.key}
                     icon={item.icon}
                     label={item.label}
+                    collapsed={collapsed}
                     onClick={() => select(item.key)}
                   />
                 ))}
@@ -289,15 +347,20 @@ export default function Dashboard() {
           ))}
         </nav>
 
-        <div className="border-t border-line p-4">
-          <div className="flex items-center gap-2.5 rounded-2xl bg-surface-alt px-3 py-2.5">
-            <span className="relative flex h-2.5 w-2.5" aria-hidden>
+        <div className={`border-t border-line p-4 ${collapsed ? "md:p-3" : ""}`}>
+          <div
+            className={`flex items-center gap-2.5 rounded-2xl bg-surface-alt px-3 py-2.5 ${
+              collapsed ? "md:justify-center md:px-0" : ""
+            }`}
+            title={collapsed ? `Digital twin active — ${twin.profile.name} · ${twin.profile.city}` : undefined}
+          >
+            <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden>
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-2 opacity-60" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-2" />
             </span>
-            <div>
-              <div className="text-xs font-bold">Digital twin active</div>
-              <div className="text-[11px] text-ink-dim">
+            <div className={collapsed ? "md:hidden" : ""}>
+              <div className="whitespace-nowrap text-xs font-bold">Digital twin active</div>
+              <div className="whitespace-nowrap text-[11px] text-ink-dim">
                 {twin.profile.name} · {twin.profile.city}
               </div>
             </div>
