@@ -456,12 +456,17 @@ export default function Dashboard() {
             {/* ---------- ABOUT ---------- */}
             <div className={activeView === "info" ? "flex flex-col gap-5" : "hidden"}>
               <ViewHead title="About this demo" subtitle="Methodology & data sources" />
-              <PanelCard className="max-w-3xl">
-                <div className="flex flex-col gap-3 text-sm text-ink-dim">
-                  <p className="leading-relaxed">
-                    BarangAI outputs are decision-support estimates from simplified models, intended
-                    for scenario comparison — not engineering-grade predictions.
-                  </p>
+              <PanelCard>
+                <div className="grid gap-6 text-sm text-ink-dim md:grid-cols-2">
+                  <div>
+                    <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">
+                      Methodology
+                    </div>
+                    <p className="max-w-prose leading-relaxed">
+                      BarangAI outputs are decision-support estimates from simplified models, intended
+                      for scenario comparison — not engineering-grade predictions.
+                    </p>
+                  </div>
                   <div>
                     <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">
                       Data sources
