@@ -77,6 +77,4 @@ See [`docs/`](docs/) for the PRD, architecture, data model, and scenario coeffic
 
 ## 🌐 Deployed Project
 
-- **Live Demo:** https://your-deployed-link.com *(to be added)*
-- **Alternative Link (if any):** https://your-backup-link.com *(to be added)*
-- **Github Link:** https://github.com/Randylrnz/SparkFest-README
+- **Live Demo:** https://barangai.vercel.app/
