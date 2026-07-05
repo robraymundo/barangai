@@ -67,8 +67,6 @@ npm test                     # 58 Vitest tests
 npm run typecheck
 ```
 
-Without API keys, scores are still fully computed, AI explanations use deterministic templates, and the map shows a colored-grid fallback. `.env.local` is gitignored, so your keys are never committed.
-
 **Environment variables:** `GEMINI_API_KEY` (live AI), `GEMINI_MODEL` (default `gemini-2.0-flash`), `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (interactive map), `NEXT_PUBLIC_FIREBASE_*` / `FIREBASE_SERVICE_ACCOUNT` (persistence, when wired).
 
 See [`docs/`](docs/) for the PRD, architecture, data model, and scenario coefficients (with assumptions, confidence levels, and sources).
