@@ -90,7 +90,9 @@ export function ZoneSelect({
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-ink-dim">{label}</span>
+      {/* ps-3 matches the select's px-3 padding so the label lines up with the field's
+          value text rather than its left border. */}
+      <span className="mb-1.5 block ps-3 text-xs font-semibold uppercase tracking-wide text-ink-dim">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
