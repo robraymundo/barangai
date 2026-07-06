@@ -331,7 +331,7 @@ export default function Dashboard() {
               {gi > 0 && (
                 <div className={collapsed ? "mx-2 mb-3 mt-1 hidden h-px bg-line md:block" : "hidden"} aria-hidden />
               )}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 pb-3">
                 {group.items.map((item) => (
                   <NavItem
                     key={item.key}

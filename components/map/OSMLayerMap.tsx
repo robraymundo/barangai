@@ -21,9 +21,6 @@ export default function OSMLayerMap({ profile, geojson, valueByZone, polarity, l
       if (cancelled || !ref.current || ref.current.dataset.init === "1") return;
       ref.current.dataset.init = "1";
 
-      // Keep tiles filling the container when its width changes (e.g. sidebar collapse).
-      observer = new ResizeObserver(() => map?.invalidateSize());
-      observer.observe(ref.current);
 
       map = L.map(ref.current, { zoomControl: false }).setView(
         [profile.centroid.lat, profile.centroid.lng],
@@ -60,7 +57,9 @@ export default function OSMLayerMap({ profile, geojson, valueByZone, polarity, l
       }).addTo(map);
 
       try {
-        map.fitBounds(layer.getBounds(), { padding: [20, 20] });
+        // animate:false — a queued fit animation would crash if StrictMode/navigation
+        // removes the map mid-flight (reads _leaflet_pos on torn-down panes).
+        map.fitBounds(layer.getBounds(), { padding: [20, 20], animate: false });
       } catch {
         /* empty/degenerate geometry — keep default view */
       }
@@ -80,12 +79,30 @@ export default function OSMLayerMap({ profile, geojson, valueByZone, polarity, l
           keyboard: false,
         }).addTo(map);
       }
+
+      // Keep tiles filling the container when its width changes (e.g. sidebar collapse).
+      // Guard against the container being hidden (display:none → 0×0) or torn down, which
+      // would otherwise make Leaflet throw "Cannot read properties of undefined (_leaflet_pos)".
+      observer = new ResizeObserver(() => {
+        const el = ref.current;
+        if (cancelled || !map || !el || el.offsetParent === null || el.clientWidth === 0) return;
+        try {
+          map.invalidateSize({ animate: false, pan: false });
+        } catch {
+          /* map mid-teardown — safe to ignore */
+        }
+      });
+      observer.observe(ref.current);
     })();
 
     return () => {
       cancelled = true;
       observer?.disconnect();
-      if (map) map.remove();
+      try {
+        map?.remove();
+      } catch {
+        /* animation frame may fire mid-teardown — safe to ignore */
+      }
       if (ref.current) delete ref.current.dataset.init;
     };
   }, [profile, geojson, valueByZone, polarity, legendLabel, onZoneClick, selectedZoneId]);
