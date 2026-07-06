@@ -88,7 +88,8 @@ export const api = {
   twin: () => getJson<TwinResponse>("/api/twin"),
   resilience: () => getJson<ResilienceResponse>("/api/resilience"),
   vulnerability: () => postJson<VulnerabilityResponse>("/api/vulnerability", {}),
-  simulate: (question: string) => postJson<SimulateResponse>("/api/simulate", { question }),
+  simulate: (question: string, targetZoneId?: string) =>
+    postJson<SimulateResponse>("/api/simulate", { question, targetZoneId }),
   budget: (budget: number, projects: ProjectCandidate[]) =>
     postJson<BudgetResponse>("/api/budget", { budget, projects }),
   envLayers: () => getJson<EnvLayersResponse>("/api/environment"),

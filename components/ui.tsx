@@ -68,6 +68,45 @@ export function Button({
   );
 }
 
+export interface ZoneOption {
+  zoneId: string;
+  name: string;
+}
+
+/** Labeled zone picker, shared by the Scenario, Policy, and Climate simulators so a
+ *  simulation can be scoped to a specific barangay zone. */
+export function ZoneSelect({
+  value,
+  onChange,
+  zones,
+  className = "",
+  label = "Zone",
+}: {
+  value: string;
+  onChange: (zoneId: string) => void;
+  zones: ZoneOption[];
+  className?: string;
+  label?: string;
+}) {
+  return (
+    <label className={`block ${className}`}>
+      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-ink-dim">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        aria-label="Target zone"
+        className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-light"
+      >
+        {zones.map((z) => (
+          <option key={z.zoneId} value={z.zoneId}>
+            {z.name}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 /** Inline alert for error/info feedback, consistent across all panels. */
 export function Alert({ tone = "error", children }: { tone?: "error" | "info"; children: ReactNode }) {
   const tones = {

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Route, ShieldCheck, Wind, Users, Siren, Store, Smile, MapPin, MessagesSquare } from "lucide-react";
 import type { SimulateResponse } from "@/lib/client/api";
 import { api } from "@/lib/client/api";
-import { Alert, Badge, Button, Card, EmptyState, Spinner } from "@/components/ui";
+import { Alert, Badge, Button, Card, EmptyState, Spinner, ZoneSelect, type ZoneOption } from "@/components/ui";
 import { POLICY_TEMPLATES, type PolicySimulationResult } from "@/lib/scoring/policy";
 
 function fmt(n: number): string {
@@ -38,11 +38,14 @@ const METRIC_DEFS: Array<{
 ];
 
 export default function PolicyImpactSimulator({
+  zones,
   onSimulated,
 }: {
+  zones: ZoneOption[];
   onSimulated?: (res: SimulateResponse) => void;
 }) {
   const [question, setQuestion] = useState("");
+  const [zoneId, setZoneId] = useState(zones[0]?.zoneId ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [runs, setRuns] = useState<Run[]>([]);
@@ -53,7 +56,7 @@ export default function PolicyImpactSimulator({
     setLoading(true);
     setError(null);
     try {
-      const res = await api.policySimulate(query);
+      const res = await api.policySimulate(query, zoneId || undefined);
       const entry: Run = { id: `${Date.now()}`, result: res.result, explanation: res.explanation };
       setRuns((prev) => [...prev, entry]);
       onSimulated?.({
@@ -79,18 +82,21 @@ export default function PolicyImpactSimulator({
     <div className="flex flex-col gap-5">
       <Card title="Ask a Policy Question" subtitle="Natural language, or pick a template below" icon={ShieldCheck}>
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <input
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && run(question)}
-              placeholder="e.g. What if tricycle terminals are relocated?"
-              className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink placeholder-ink-faint outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-light"
-              aria-label="Policy question"
-            />
-            <Button onClick={() => run(question)} disabled={loading || !question.trim()}>
-              {loading ? "Simulating…" : "Simulate"}
-            </Button>
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-end">
+            <ZoneSelect value={zoneId} onChange={setZoneId} zones={zones} />
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && run(question)}
+                placeholder="e.g. What if tricycle terminals are relocated?"
+                className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink placeholder-ink-faint outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-light"
+                aria-label="Policy question"
+              />
+              <Button onClick={() => run(question)} disabled={loading || !question.trim()}>
+                {loading ? "Simulating…" : "Simulate"}
+              </Button>
+            </div>
           </div>
           <div className="flex flex-wrap gap-1.5">
             {POLICY_TEMPLATES.map((t) => (

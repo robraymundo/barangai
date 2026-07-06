@@ -21,14 +21,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
 
-  const { question } = parsed.value;
+  const { question, targetZoneId } = parsed.value;
   const profile = getProfile();
   const zones = profile.zones.map((z) => ({ zoneId: z.zoneId, name: z.name }));
 
+  // An explicit zone selection from the UI scopes the whole simulation to that zone.
+  const overrideZone = targetZoneId && zones.some((z) => z.zoneId === targetZoneId) ? targetZoneId : undefined;
+
   const canned = matchCanned(question);
-  const params = canned ? canned.params : await parseScenario(question, zones);
+  const params = canned ? { ...canned.params } : await parseScenario(question, zones);
+  if (overrideZone) params.targetZoneId = overrideZone;
+
   const result = simulateScenario(profile, params);
-  const explanation = canned ? canned.explanation : await explainSimulation(result, profile);
+
+  // Use the pre-written demo prose only when it won't contradict an overridden zone;
+  // otherwise regenerate the explanation so its named zone matches the computed numbers.
+  const useCanned = canned && (!overrideZone || overrideZone === canned.params.targetZoneId);
+  const explanation = useCanned ? canned.explanation : await explainSimulation(result, profile);
 
   return NextResponse.json({ params, result, explanation });
 }

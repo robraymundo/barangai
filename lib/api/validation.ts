@@ -63,12 +63,15 @@ export function validateBudgetRequest(body: unknown): Validated<BudgetRequest> {
   return { ok: true, value: { budget: b.budget, projects } };
 }
 
-/** Validate the POST /api/simulate body: { question }. */
-export function validateSimulateRequest(body: unknown): Validated<{ question: string }> {
+/** Validate the POST /api/simulate body: { question, targetZoneId? }. */
+export function validateSimulateRequest(
+  body: unknown,
+): Validated<{ question: string; targetZoneId?: string }> {
   if (typeof body !== "object" || body === null) return { ok: false, error: "body must be a JSON object" };
-  const q = (body as Record<string, unknown>).question;
-  if (typeof q !== "string" || q.trim().length === 0) {
+  const b = body as Record<string, unknown>;
+  if (typeof b.question !== "string" || b.question.trim().length === 0) {
     return { ok: false, error: "question must be a non-empty string" };
   }
-  return { ok: true, value: { question: q.trim() } };
+  const targetZoneId = typeof b.targetZoneId === "string" && b.targetZoneId ? b.targetZoneId : undefined;
+  return { ok: true, value: { question: b.question.trim(), targetZoneId } };
 }

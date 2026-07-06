@@ -487,7 +487,7 @@ export default function Dashboard() {
             <div className={activeView === "simulate" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead title="AI Scenario Simulator" subtitle="Ask a what-if question about a project or policy" />
               <PanelCard>
-                <ScenarioSimulator onSimulated={(res) => setSims((prev) => [...prev, res])} />
+                <ScenarioSimulator zones={twin.profile.zones} onSimulated={(res) => setSims((prev) => [...prev, res])} />
               </PanelCard>
             </div>
 
@@ -552,7 +552,7 @@ export default function Dashboard() {
             {/* ---------- POLICY IMPACT SIMULATOR ---------- */}
             <div className={activeView === "policy" ? "view-in flex flex-col gap-5" : "hidden"}>
               <ViewHead title="Policy Impact Simulator" subtitle="Simulate policies in natural language and compare outcomes" />
-              <PolicyImpactSimulator onSimulated={(res) => setSims((prev) => [...prev, res])} />
+              <PolicyImpactSimulator zones={twin.profile.zones} onSimulated={(res) => setSims((prev) => [...prev, res])} />
             </div>
 
             {/* ---------- ABOUT ---------- */}
