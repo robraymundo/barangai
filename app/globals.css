@@ -1,20 +1,35 @@
 @import "tailwindcss";
 
-/* Design tokens — light civic green theme (from design reference). */
+/* ==========================================================================
+   Design tokens — BarangAI light theme, built around the brand green #1E6E41.
+   The brand ramp (dark → primary → bright) drives every interactive surface:
+   buttons, active nav, focus rings, links, chips, gauges and charts.
+   ========================================================================== */
 @theme {
-  --color-page: #f0faf4;
+  /* Neutral canvas — subtly tinted toward the forest brand hue for cohesion. */
+  --color-page: #f1f8f3;
   --color-surface: #ffffff;
-  --color-surface-alt: #eaf7ef;
-  --color-line: #dcede2;
+  --color-surface-alt: #eaf4ec;
+  --color-line: #dbe9df;
   --color-ink: #0b2318;
-  --color-ink-dim: #5c7568;
-  --color-ink-faint: #7c9488;
-  --color-brand: #15803d;
-  --color-brand-dark: #0f3d2e;
-  --color-brand-2: #22c55e;
+  --color-ink-dim: #566e60;
+  --color-ink-faint: #7a938a;
+
+  /* Brand ramp — primary #1E6E41 with a deep shade and a bright shade. */
+  --color-brand: #1e6e41; /* primary: buttons, active states, accents */
+  --color-brand-dark: #124a2b; /* deep: hero gradient, pressed depth, on-white emphasis */
+  --color-brand-2: #2fa35c; /* bright: gradient partner, data highlights */
+  --color-brand-light: #e4f3ea; /* tint: focus rings, chip/badge fills */
+
+  /* Semantic status — kept distinct from brand so meaning stays legible. */
+  --color-warn: #b45309;
+  --color-warn-fill: #fef3c7;
+  --color-danger: #dc2626;
+  --color-danger-fill: #fee2e2;
+
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --shadow-card: 0 2px 8px rgba(17, 24, 39, 0.05);
-  --shadow-lift: 0 8px 24px -8px rgba(17, 24, 39, 0.14);
+  --shadow-card: 0 2px 8px rgba(11, 35, 24, 0.06);
+  --shadow-lift: 0 10px 28px -10px rgba(11, 35, 24, 0.2);
 }
 
 html,
@@ -119,15 +134,15 @@ h4 {
 .leaflet-control-zoom a {
   background: #ffffff !important;
   color: #0b2318 !important;
-  border-color: #dcede2 !important;
+  border-color: #dbe9df !important;
 }
 .leaflet-control-zoom a:hover {
-  background: #eaf7ef !important;
+  background: #eaf4ec !important;
 }
 .leaflet-control-attribution {
   background: rgba(255, 255, 255, 0.7) !important;
-  color: #5c7568 !important;
+  color: #566e60 !important;
 }
 .leaflet-control-attribution a {
-  color: #15803d !important;
+  color: #1e6e41 !important;
 }

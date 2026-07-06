@@ -44,13 +44,13 @@ export default function ResiliencePanel({
 
   const tooltipStyle = {
     background: "#ffffff",
-    border: "1px solid #DCEDE2",
+    border: "1px solid #DBE9DF",
     borderRadius: 10,
     color: "#0B2318",
     fontSize: 12,
-    boxShadow: "0 4px 14px rgba(17,24,39,0.08)",
+    boxShadow: "0 6px 18px rgba(11,35,24,0.1)",
   };
-  const tickStyle = { fontSize: 10, fill: "#5C7568" };
+  const tickStyle = { fontSize: 10, fill: "#566E60" };
 
   return (
     <div className="flex flex-col gap-5">
@@ -63,7 +63,7 @@ export default function ResiliencePanel({
                 <XAxis dataKey="name" tick={tickStyle} interval={0} angle={-20} textAnchor="end" height={44} />
                 <YAxis domain={[0, 100]} tick={tickStyle} />
                 <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${Math.round(v)}`, "Score"]} />
-                <Bar dataKey="value" fill="#15803D" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="value" fill="#1E6E41" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -80,7 +80,7 @@ export default function ResiliencePanel({
                 <XAxis dataKey="label" tick={tickStyle} />
                 <YAxis domain={[0, 100]} tick={tickStyle} />
                 <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${Math.round(v)}`, "Resilience"]} />
-                <Line type="monotone" dataKey="score" stroke="#16A34A" strokeWidth={2.5} dot={{ r: 3, fill: "#16A34A" }} />
+                <Line type="monotone" dataKey="score" stroke="#2FA35C" strokeWidth={2.5} dot={{ r: 3, fill: "#2FA35C" }} />
               </LineChart>
             </ResponsiveContainer>
         </div>

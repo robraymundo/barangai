@@ -51,7 +51,7 @@ export default function BudgetOptimizer() {
               step={500_000}
               value={budget}
               onChange={(e) => setBudget(Number(e.target.value))}
-              className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm tabular-nums text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-[#DCFCE7]"
+              className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm tabular-nums text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-light"
             />
           </label>
           <Button onClick={run} disabled={loading || budget <= 0}>
@@ -87,7 +87,7 @@ export default function BudgetOptimizer() {
 
             <ul className="flex flex-col gap-2">
               {data.result.selected.map((s) => (
-                <li key={s.project.id} className="rounded-xl border border-[#BBE7C8] bg-[#DCFCE7]/60 px-3 py-2">
+                <li key={s.project.id} className="rounded-xl border border-brand/20 bg-brand-light/60 px-3 py-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-semibold text-ink">✓ {s.project.name}</span>
                     <span className="text-xs tabular-nums text-ink-dim">

@@ -75,7 +75,7 @@ export default function ScenarioSimulator({
             onChange={(e) => setQuestion(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && run(question)}
             placeholder="e.g. What if we build a park?"
-            className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink placeholder-ink-faint outline-none transition focus:border-brand focus:ring-4 focus:ring-[#DCFCE7]"
+            className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink placeholder-ink-faint outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-light"
             aria-label="Scenario question"
           />
           <Button onClick={() => run(question)} disabled={loading || !question.trim()}>

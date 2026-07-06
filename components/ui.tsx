@@ -113,7 +113,7 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
 export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "green" | "amber" | "red" | "blue" }) {
   const tones: Record<string, string> = {
     neutral: "bg-surface-alt text-ink-dim ring-1 ring-inset ring-line",
-    green: "bg-[#DCFCE7] text-[#15803D] ring-1 ring-inset ring-[#BBE7C8]",
+    green: "bg-brand-light text-brand ring-1 ring-inset ring-brand/20",
     amber: "bg-[#FEF3C7] text-[#B45309] ring-1 ring-inset ring-[#F5E3A9]",
     red: "bg-[#FEE2E2] text-[#DC2626] ring-1 ring-inset ring-[#F7C6C6]",
     blue: "bg-sky-100 text-sky-700 ring-1 ring-inset ring-sky-200",
@@ -137,11 +137,11 @@ export function Spinner({ label }: { label?: string }) {
 /** Interpolate red→amber→green where t=1 is "good". */
 export function scoreColor(score: number, polarity: "goodHigh" | "goodLow"): string {
   const t = Math.max(0, Math.min(1, polarity === "goodHigh" ? score / 100 : 1 - score / 100));
-  // red-500 -> amber-500 -> green-600
+  // red-500 -> amber-500 -> brand green (#2FA35C) — the "good" end matches the brand ramp.
   const stops = [
     { p: 0, c: [239, 68, 68] },
     { p: 0.5, c: [245, 158, 11] },
-    { p: 1, c: [22, 163, 74] },
+    { p: 1, c: [47, 163, 92] },
   ];
   let a = stops[0];
   let b = stops[stops.length - 1];

@@ -51,7 +51,7 @@ function ZonesLayer({ profile, geojson, valueByZone, polarity, legendLabel, onZo
       return {
         fillColor: scoreColor(value * 100, polarity),
         fillOpacity: isSelected ? 0.75 : 0.5,
-        strokeColor: isSelected ? "#0F3D2E" : "#ffffff",
+        strokeColor: isSelected ? "#124A2B" : "#ffffff",
         strokeWeight: isSelected ? 2.5 : 1.5,
       };
     });

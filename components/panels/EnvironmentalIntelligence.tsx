@@ -134,8 +134,8 @@ export default function EnvironmentalIntelligence({
                 style={{
                   background:
                     activeLayerMeta.polarity === "goodLow"
-                      ? "linear-gradient(to right, #16a34a, #f59e0b, #ef4444)"
-                      : "linear-gradient(to right, #ef4444, #f59e0b, #16a34a)",
+                      ? "linear-gradient(to right, #2FA35C, #f59e0b, #ef4444)"
+                      : "linear-gradient(to right, #ef4444, #f59e0b, #2FA35C)",
                 }}
               />
               <span className="text-[10px] font-medium text-ink-dim">
@@ -155,7 +155,7 @@ export default function EnvironmentalIntelligence({
             <select
               value={zoneId}
               onChange={(e) => setZoneId(e.target.value)}
-              className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-[#DCFCE7]"
+              className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-light"
             >
               {profile.zones.map((z) => (
                 <option key={z.zoneId} value={z.zoneId}>

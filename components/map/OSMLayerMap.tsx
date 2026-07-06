@@ -42,7 +42,7 @@ export default function OSMLayerMap({ profile, geojson, valueByZone, polarity, l
           const value = valueByZone[zoneId] ?? 0;
           const isSelected = zoneId === selectedZoneId;
           return {
-            color: isSelected ? "#0F3D2E" : "#ffffff",
+            color: isSelected ? "#124A2B" : "#ffffff",
             weight: isSelected ? 2.5 : 1.5,
             fillColor: scoreColor(value * 100, polarity),
             fillOpacity: isSelected ? 0.75 : 0.55,

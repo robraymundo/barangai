@@ -93,7 +93,7 @@ export default function OSMMap({ profile, geojson, vulnerabilityByZone }: Props)
         L.circleMarker([f.location.lat, f.location.lng], {
           radius: 6,
           color: "#ffffff",
-          fillColor: "#15803D",
+          fillColor: "#1E6E41",
           fillOpacity: 0.9,
           weight: 2,
         })

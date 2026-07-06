@@ -23,8 +23,8 @@ export function BrandLogo({ className = "" }: { className?: string }) {
     <svg viewBox="0 0 100 100" className={className} role="img" aria-label="BarangAI logo">
       <defs>
         <linearGradient id="brandTile" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#587F2F" />
-          <stop offset="100%" stopColor="#90AF58" />
+          <stop offset="0%" stopColor="#237A49" />
+          <stop offset="100%" stopColor="#124A2B" />
         </linearGradient>
       </defs>
       <rect width="100" height="100" rx="24" fill="url(#brandTile)" />
