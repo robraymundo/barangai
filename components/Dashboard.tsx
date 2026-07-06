@@ -241,7 +241,7 @@ export default function Dashboard() {
   const kpis: Array<{ icon: LucideIcon; chip: string; value: string; label: string; bar?: number }> = [
     { icon: ShieldCheck, chip: "bg-brand", value: `${Math.round(currentScore)}/100`, label: "Community Resilience", bar: currentScore },
     { icon: MapIcon, chip: "bg-[#F59E0B]", value: String(vuln.ranked.length), label: "Zones tracked" },
-    { icon: Building2, chip: "bg-brand-2", value: String(twin.profile.facilities.length), label: "Facilities mapped" },
+    { icon: Building2, chip: "bg-[#2596be]", value: String(twin.profile.facilities.length), label: "Facilities mapped" },
     { icon: Users, chip: "bg-[#EF4444]", value: vuln.ranked[0]?.name ?? "—", label: "Most vulnerable zone" },
     { icon: FlaskConical, chip: "bg-[#8B5CF6]", value: String(sims.length), label: "Simulations run" },
   ];
