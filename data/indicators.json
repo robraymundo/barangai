@@ -4,7 +4,7 @@
   "city": "Ilagan City, Isabela",
   "centroid": { "lat": 17.106, "lng": 121.865 },
   "dataSources": [
-    "PSA 2020 Census (barangay population, age structure) — approximated",
+    "PSA 2022 Census (barangay population, age structure) — approximated",
     "NDRRMC / Project NOAH hazard exposure — modeled",
     "OpenStreetMap (roads, facilities) — derived",
     "SYNTHETIC: income, housing quality, PWD counts, green cover, and per-purok splits are illustrative for the hackathon MVP and are not official figures"
